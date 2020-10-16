@@ -1,0 +1,53 @@
+---
+title: "Research Problem"
+author: Sam Colucci
+output: html_notebook
+---
+
+# Computing Cmax test statistic
+
+Cmax: denotes the maximum number of consecutive misses in a song
+*(somewhat) works so that in songs where all of the misses are in the same region, there would be a higher probability of a longer string of consecutive misses (higher Cmax) than where the same number of misses would occur at random in a song of the same length.
+
+
+```{r}
+# function to take in a vector of 0s and 1s and calculate cmax
+cmax <- function(v) {
+  
+  # set count.miss to be 0
+  count.zero <- 0
+  
+  # set max to be empty vector
+  max <- c()
+  
+  for (i in 1:length(v)) {
+
+    # if it's a miss: count goes up, count is added to max vector, cmax takes the maximum of all values
+    if (v[i] == 1) {
+      count.zero <- count.zero + 1
+      max[i] <- count.zero
+      } else {
+    # if it's a hit count added is 0
+        count.zero <- 0
+        max[i] <- 0
+      }
+    suppressWarnings(cmax <- max(max))
+  }
+  # return calculated value of cmax
+  return(cmax)
+}
+```
+
+
+```{r}
+song.a <- c(1,0,0,0,0,0,1,0,1,0,0,1,0,0,0,0,1,0,0,0)
+song.b <- c(0,0,0,1,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0)
+song.c <- c(1,0,1,0,1,0,0,0,0,1,1,0,0,0,0,0,0)
+song.d <- c(1,1,1,1,0,1,1,1,1,1,1,1,1,0,0,1,0)
+
+cmax(song.a)
+cmax(song.b)
+cmax(song.c)
+cmax(song.d)
+```
+
