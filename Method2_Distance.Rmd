@@ -1,0 +1,45 @@
+---
+title: "Method 2"
+author: Shannon Coyle
+output: html_notebook
+---
+
+# count number of hits between misses
+```{r}
+numHits <- function(v) {
+  # set number of hits to 0
+  count.hit <- 0
+  
+  # make an empty vector
+  hits <- c()
+  
+  for(i in 1:length(v)) {
+    # if a hit, count increases 
+    if(v[i] == 0) {
+      count.hit <- count.hit + 1
+      hits[i] <- count.hit
+    }
+    else
+    {
+      count.hit <- 0
+      hits[i] <- count.hit
+    }
+    suppressWarnings(numHits <- hits)
+  }
+  
+  return(numHits)
+}
+```
+
+```{r}
+song.a <- c(1,0,0,0,0,0,1,0,1,0,0,1,0,0,0,0,1,0,0,0)
+song.b <- c(0,0,0,1,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0)
+song.c <- c(1,0,1,0,1,0,0,0,0,1,1,0,0,0,0,0,0)
+song.d <- c(1,1,1,1,0,1,1,1,1,1,1,1,1,0,0,1,0)
+
+cat('Total Hits Between Misses: ' , numHits(song.a), '\n')
+cat('Total Hits Between Misses: ' , numHits(song.b), '\n')
+cat('Total Hits Between Misses: ' , numHits(song.c), '\n')
+cat('Total Hits Between Misses: ' , numHits(song.d), '\n')
+
+```
