@@ -1,0 +1,124 @@
+---
+title: "Method 1"
+author: Shannon Coyle
+output: html_notebook
+---
+
+```{r}
+# function to take in a vector of 0s and 1s and calculate cmax
+cmax <- function(v) {
+  # set count.zero to be 0
+  count.zero <- 0
+  
+  # set max to be empty vector
+  max <- c()
+  
+  for (i in 1:length(v)) {
+
+    # if it's a miss: count goes up, count is added to max vector, cmax takes the maximum of all values
+    if (v[i] == 1) {
+      count.zero <- count.zero + 1
+      max[i] <- count.zero
+      } 
+    else {
+    # if it's a hit count added is 0
+        count.zero <- 0
+        max[i] <- 0
+      }
+    suppressWarnings(cmax <- max(max))
+  }
+  
+  # return calculated value of cmax
+  return(cmax)
+}
+```
+
+# count number of individual misses (number of 1's)
+```{r}
+totalMiss <- function(v) {
+  # set hit and miss count to 0
+  count.miss <- 0 
+  count.hit <- 0
+  
+  miss <- c()
+  
+  for (i in 1:length(v)) {
+
+    # if it's a miss: count goes up, count is added to max vector, cmax takes the maximum of all values
+    if (v[i] == 1) {
+      count.miss <- count.miss + 1
+      miss[i] <- count.miss
+      } 
+    else {
+    # if it's a hit count added is 0
+        count.hit <- 0
+        miss[i] <- 0
+      }
+    suppressWarnings(totalMisses <- max(miss))
+  }
+  
+  # return calculated value of total misses
+  return(totalMisses)
+  
+}
+```
+
+
+```{r}
+missStreak <- function(v) {
+  # set miss streak to be 0
+  miss.streak <- 0
+  
+  # making a misses vector
+  misses <- c()
+  
+  for (i in 1:length(v)) {
+    # counts the number of miss streaks
+    if (v[i] == 1) {
+      if (cmax(v[i]) > 2) {
+        # adds one to the miss streak if the consecutive counts are 2
+        miss.streak <- miss.streak + 1
+        misses[i] <- miss.streak
+      }
+    }
+    else {
+      miss.streak <- 0
+      misses[i] <- 0
+    }
+    suppressWarnings(totMissStreak <- max(misses))
+  }
+  
+  return(totMissStreak)
+}
+```
+
+
+```{r}
+song.a <- c(1,0,0,0,0,0,1,0,1,0,0,1,0,0,0,0,1,0,0,0)
+song.b <- c(0,0,0,1,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0)
+song.c <- c(1,0,1,0,1,0,0,0,0,1,1,0,0,0,0,0,0)
+song.d <- c(1,1,1,1,0,1,1,1,1,1,1,1,1,0,0,1,0)
+
+cat('Total Misses in Longest Streak: ' , cmax(song.a), '\n',
+    'Total Misses: ', totalMiss(song.a), '\n', 
+    'Total Number of Miss Streaks: ', missStreak(song.a), '\n')
+
+cat('Total Misses in Longest Streak: ' , cmax(song.b), '\n',
+    'Total Misses: ', totalMiss(song.b), '\n', 
+     'Total Number of Miss Streaks: ', missStreak(song.b), '\n')
+
+cat('Total Misses in Longest Streak: ' , cmax(song.c), '\n',
+    'Total Misses: ', totalMiss(song.c), '\n', 
+     'Total Number of Miss Streaks: ', missStreak(song.c), '\n')
+
+cat('Total Misses in Longest Streak: ' , cmax(song.d), '\n',
+    'Total Misses: ', totalMiss(song.d), '\n', 
+     'Total Number of Miss Streaks: ', missStreak(song.d), '\n')
+
+cat('\n', '--- CALCULATIONS FOR METHOD 1 ---', '\n')
+cat('Song A: ', totalMiss(song.a)/missStreak(song.a), '\n')
+cat('Song B: ', totalMiss(song.b)/missStreak(song.b), '\n')
+cat('Song C: ', totalMiss(song.c)/missStreak(song.c), '\n')
+cat('Song D: ', totalMiss(song.d)/missStreak(song.d), '\n')
+```
+
