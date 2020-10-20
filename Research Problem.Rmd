@@ -1,7 +1,9 @@
 ---
 title: "Research Problem"
-author: Sam Colucci
-output: html_notebook
+author: "Sam Colucci"
+output:
+  pdf_document: default
+  html_notebook: default
 ---
 
 # Computing Cmax test statistic
@@ -14,8 +16,8 @@ Cmax: denotes the maximum number of consecutive misses in a song
 # function to take in a vector of 0s and 1s and calculate cmax
 cmax <- function(v) {
   
-  # set count.miss to be 0
-  count.zero <- 0
+  # set count.one to be 0
+  count.one <- 0
   
   # set max to be empty vector
   max <- c()
@@ -24,15 +26,16 @@ cmax <- function(v) {
 
     # if it's a miss: count goes up, count is added to max vector, cmax takes the maximum of all values
     if (v[i] == 1) {
-      count.zero <- count.zero + 1
-      max[i] <- count.zero
+      count.one <- count.one + 1
+      max[i] <- count.one
       } else {
     # if it's a hit count added is 0
-        count.zero <- 0
+        count.one <- 0
         max[i] <- 0
       }
     suppressWarnings(cmax <- max(max))
   }
+  print(max)
   # return calculated value of cmax
   return(cmax)
 }
@@ -49,5 +52,150 @@ cmax(song.a)
 cmax(song.b)
 cmax(song.c)
 cmax(song.d)
+```
+
+
+# Method 1
+
+Compute number of total misses over the number of miss streaks
+
+```{r}
+# function to take in a vector of 0s and 1s and calculate cmax
+miss.over.streaks <- function(v) {
+  
+  count.one <- 0
+  
+  count.streaks <- 0
+  
+  num.miss <- c()
+  
+  counts <- c()
+  
+  for (i in 1:length(v)) {
+
+    # if it's a miss: count goes up, count is added to counts vector, fills num.miss with a 1
+    if (v[i] == 1) {
+      count.one <- count.one + 1
+      counts[i] <- count.one
+      num.miss[i] <- 1
+      } else {
+    # if it's a hit count added is 0, count is added to counts vector, fills num.miss with a 0
+        count.one <- 0
+        counts[i] <- count.one + 0
+        num.miss[i] <- 0
+      }
+    }
+  for (j in 2:length(v)) {
+    if (counts[j] == 0 && counts[j-1] != 0) {
+      count.streaks <- count.streaks + 1
+      } else {
+        count.streaks <- count.streaks + 0
+      }
+  }
+  prop <- sum(num.miss)/count.streaks
+  # return calculated value of proportion
+  return(prop)
+}
+```
+
+```{r}
+miss.over.streaks(song.a)
+miss.over.streaks(song.b)
+miss.over.streaks(song.c)
+miss.over.streaks(song.d)
+```
+
+# Method 2
+
+Compute the distance in between every miss
+
+```{r}
+distance.funct <- function(v) {
+  
+  distance.vect <- c()
+  distance <- 0
+  
+  for (i in 1:length(v)) {
+    if (v[i] == 1 && v[i+1] == 1) {
+      distance <- distance +1
+      distance.vect[i] <- distance
+    } else if (v[i-1] == 0 && v[i] == 1 && v[i+1] == 0) {
+      distance <- 0
+      distance.vect[i] <- 1
+    } else if ((v[i] == 0 && v[i+1] ==0) %% (v[i] == 0 && v[i+1] == 1)) {
+      distance <- 0
+      distance.vect[i] <- 0
+    }
+  }
+  return(distance.vect)
+}
+```
+
+```{r}
+distance.funct(song.a)
+```
+
+
+```{r}
+# function to take in a vector of 0s and 1s and calculate cmax
+distance <- function(v) {
+  
+  # set count.one to be 0
+  count.one <- 0
+  
+  # set max to be empty vector
+  max <- c()
+  s <- 0
+  
+  for (i in 1:length(v)) {
+
+    # if it's a miss: count goes up, count is added to max vector, cmax takes the maximum of all values
+    if (v[i] == 0) {
+      count.one <- count.one + 1
+      max[i] <- count.one
+      } else {
+    # if it's a hit count added is 0
+        count.one <- 0
+        max[i] <- 0
+      }
+  for (j in 1:length(max)) {
+    if (max[i+s] != 0)
+      
+  
+    cmax <- max(max)
+  }
+  print(max)
+  # return calculated value of cmax
+  return(cmax)
+}
+```
+
+```{r}
+distance(song.a)
+```
+
+
+
+```{r}
+distance <- function(v) {
+  num.zero <- c()
+  for (i in 1:length(v)) {
+    if (v[i] == 0) {
+      num.zero[i] <- 1
+    } else {
+      num.zero[i] <- 0
+    }
+  }
+    return(num.zero)
+}
+  # for (j in 1:length(num.zero)) {
+  #   if (num.zero[j] == 1) {
+  #     distance.vect[j] <- sum(num.zero[1:j])
+  #   }
+  # }
+```
+
+```{r}
+distance(song.b)
 ```
 
