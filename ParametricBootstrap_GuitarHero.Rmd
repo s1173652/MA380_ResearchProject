@@ -1,0 +1,55 @@
+---
+title: "R Notebook"
+author: Shannon Coyle
+output: html_notebook
+---
+
+```{r}
+getwd()
+
+```
+
+## Load installed packages into this working session, called putting them into this library.
+You need to do this every time you reopen a Rmd file or start a new one.
+```{r, message=FALSE}
+library(mosaic)
+library(haven)
+library(ggpubr)
+library(readxl)
+```
+
+```{r}
+song.a <- c(1,0,0,0,0,0,1,0,1,0,0,1,0,0,0,0,1,0,0,0)
+song.b <- c(0,0,0,1,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0)
+song.c <- c(1,0,1,0,1,0,0,0,0,1,1,0,0,0,0,0,0)
+song.d <- c(1,1,1,1,0,1,1,1,1,1,1,1,1,0,0,1,0)
+
+# Number of data points and mean
+n = length(song.a)
+xbar = mean(song.a)
+
+# MLE for lamba 
+lambdahat = 1.0 / xbar
+
+nboot = 1000
+# Draw the bootstrap sample from Exponential (lambdahat)
+x = rexp(n * nboot, lambdahat)
+bootstrapsample = matrix(x, nrow = n, ncol = nboot)
+
+# Compute the bootstrap lambdastar
+lambdastar = 1.0/colMeans(bootstrapsample)
+
+# Compute the differences
+deltastar = lambdastar- lambdahat
+
+# Find the 0.05 and 0.95 quantile for deltasta
+d = quantile(deltastar, c(0.05, 0.95))
+
+# Calculate the 95% confidence interval for lambda
+ci = lambdahat - c(d[2], d[1])
+
+# Formats the output text
+s = sprintf("Confidence Interval for lambda: [%.3f, %.3f]", ci[1], ci[2])
+cat(s)
+```
+
