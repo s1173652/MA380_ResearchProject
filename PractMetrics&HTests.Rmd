@@ -1,0 +1,215 @@
+---
+title: "Method 1"
+author: Shannon Coyle
+output: html_notebook
+---
+
+```{r}
+# function to take in a vector of 0s and 1s and calculate cmax
+cmax <- function(v) {
+  # set count.zero to be 0
+  count.zero <- 0
+  
+  # set max to be empty vector
+  max <- c()
+  
+  for (i in 1:length(v)) {
+
+    # if it's a miss: count goes up, count is added to max vector, cmax takes the maximum of all values
+    if (v[i] == 1) {
+      count.zero <- count.zero + 1
+      max[i] <- count.zero
+      } 
+    else {
+    # if it's a hit count added is 0
+        count.zero <- 0
+        max[i] <- 0
+      }
+    suppressWarnings(cmax <- max(max))
+  }
+  
+  # return calculated value of cmax
+  return(cmax)
+}
+```
+
+# count number of individual misses (number of 1's)
+```{r}
+totalMiss <- function(v) {
+  # set hit and miss count to 0
+  count.miss <- 0 
+  count.hit <- 0
+  
+  miss <- c()
+  
+  for (i in 1:length(v)) {
+
+    # if it's a miss: count goes up, count is added to max vector, cmax takes the maximum of all values
+    if (v[i] == 1) {
+      count.miss <- count.miss + 1
+      miss[i] <- count.miss
+      } 
+    else {
+    # if it's a hit count added is 0
+        count.hit <- 0
+        miss[i] <- 0
+      }
+    suppressWarnings(totalMisses <- max(miss))
+  }
+  
+  # return calculated value of total misses
+  return(totalMisses)
+  
+}
+```
+
+# counting how many miss streaks there are
+```{r}
+missStreak <- function(v) {
+ count.one <- 0
+  
+  count.streaks <- 0
+  
+  num.miss <- c()
+  
+  counts <- c()
+  
+  for (i in 1:length(v)) {
+    # if it's a miss: count goes up, count is added to counts vector, fills num.miss with a 1
+    if (v[i] == 1) {
+      count.one <- count.one + 1
+      counts[i] <- count.one
+      num.miss[i] <- 1
+      } else {
+    # if it's a hit count added is 0, count is added to counts vector, fills num.miss with a 0
+        count.one <- 0
+        counts[i] <- count.one + 0
+        num.miss[i] <- 0
+      }
+    }
+  for (j in 2:length(v)) {
+    if (counts[j] == 0 && counts[j-1] != 0) {
+      count.streaks <- count.streaks + 1
+      } else {
+        count.streaks <- count.streaks + 0
+      }
+  }
+  return(count.streaks)
+}
+```
+
+# Calculating Method 1
+```{r}
+method1 <- function(v) {
+  proportion <- c()
+  
+  proportion <- missStreak(v)/totalMiss(v)
+  
+  return(proportion)
+}
+```
+
+
+```{r}
+song.a <- c(1,0,0,0,0,0,1,0,1,0,0,1,0,0,0,0,1,0,0,0)
+song.b <- c(0,0,0,1,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0)
+song.c <- c(1,0,1,0,1,0,0,0,0,1,1,0,0,0,0,0,0)
+song.d <- c(1,1,1,1,0,1,1,1,1,1,1,1,1,0,0,1,0)
+
+cat('SONG A: ', '\n', 
+  'Total Misses: ', totalMiss(song.a), '\n', 
+    'Total Number of Miss Streaks: ', missStreak(song.a), '\n', '\n')
+
+cat('SONG B: ', '\n', 
+  'Total Misses: ', totalMiss(song.b), '\n', 
+     'Total Number of Miss Streaks: ', missStreak(song.b), '\n', '\n')
+
+cat('SONG C: ', '\n', 
+  'Total Misses: ', totalMiss(song.c), '\n', 
+    'Total Number of Miss Streaks: ', missStreak(song.c), '\n', '\n')
+
+cat('SONG D: ', '\n', 
+  'Total Misses: ', totalMiss(song.d), '\n', 
+    'Total Number of Miss Streaks: ', missStreak(song.d), '\n', '\n')
+
+cat('\n', '--- CALCULATIONS FOR METHOD 1 ---', '\n')
+cat('Song A: ', method1(song.a), '\n')
+cat('Song B: ', method1(song.b), '\n')
+cat('Song C: ', method1(song.c), '\n')
+cat('Song D: ', method1(song.d), '\n')
+```
+
+## METHOD 2
+# count number of hits between misses
+```{r}
+method2 <- function(v) {
+  # set number of hits to 0
+  count.hit <- 0
+  
+  # make an empty vector
+  hits <- c()
+  
+  for(i in 1:length(v)) {
+    # if a hit, count increases 
+    if(v[i] == 0) {
+      count.hit <- count.hit + 1
+      hits[i] <- count.hit
+    }
+    else
+    {
+      count.hit <- 0
+      hits[i] <- count.hit
+    }
+    suppressWarnings(numHits <- hits)
+  }
+  
+  return(numHits)
+}
+```
+
+## IMPLEMENTING A PARAMETRIC BOOTSTRAP
+# with a Bernoulli distribution
+```{r}
+parametricBootstrap <- function(v) {
+  boot.dist <- 1000
+  sample.diffmedian <- median(song.a)
+  
+  for (i in 1:boot.dist) {
+    bern.dist1 <- rbern(length(v), .50)
+  }
+  
+  bern.dist1
+}
+```
+
+# testing the functions with a Parametric bootstrap
+```{r}
+song.a <- c(1,0,0,0,0,0,1,0,1,0,0,1,0,0,0,0,1,0,0,0)
+song.b <- c(0,0,0,1,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0)
+song.c <- c(1,0,1,0,1,0,0,0,0,1,1,0,0,0,0,0,0)
+
+songAParam <- parametricBootstrap(song.a)
+songBParam <- parametricBootstrap(song.b)
+songCParam <- parametricBootstrap(song.c)
+
+cat('--- SONG A ---', '\n', 
+    'Parametric Bootstrap: ', songAParam, '\n',
+    'CMAX Function: ', cmax(songAParam), '\n', 
+    'Method 1: ', method1(songAParam), '\n',
+    'Method 2: ', method2(songAParam), '\n',
+    '\n')
+
+cat('--- SONG B ---', '\n',
+    'Parametric Bootstrap: ', songBParam, '\n',
+    'CMAX Function: ', cmax(songBParam), '\n',
+    'Method 1: ', method1(songBParam), '\n',
+    'Method 2: ', method2(songBParam), '\n',
+    '\n')
+
+cat('--- SONG C ---', '\n', 
+    'Parametric Bootstrap: ', songCParam, '\n',
+    'CMAX Function: ', cmax(songCParam), '\n',
+    'Method 1: ', method1(songCParam), '\n', 
+    'Method 2: ', method2(songCParam), '\n',
+    '\n')
+```
