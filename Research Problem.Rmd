@@ -35,7 +35,6 @@ cmax <- function(v) {
       }
     suppressWarnings(cmax <- max(max))
   }
-  print(max)
   # return calculated value of cmax
   return(cmax)
 }
@@ -64,11 +63,8 @@ Compute number of total misses over the number of miss streaks
 miss.over.streaks <- function(v) {
   
   count.one <- 0
-  
   count.streaks <- 0
-  
   num.miss <- c()
-  
   counts <- c()
   
   for (i in 1:length(v)) {
@@ -109,93 +105,139 @@ miss.over.streaks(song.d)
 
 Compute the distance in between every miss
 
+# count number of hits between misses
 ```{r}
-distance.funct <- function(v) {
+numHits <- function(v) {
+  # set number of hits to 0
+  count.hit <- 0
   
-  distance.vect <- c()
-  distance <- 0
+  # make an empty vector
+  hits <- c()
   
-  for (i in 1:length(v)) {
-    if (v[i] == 1 && v[i+1] == 1) {
-      distance <- distance +1
-      distance.vect[i] <- distance
-    } else if (v[i-1] == 0 && v[i] == 1 && v[i+1] == 0) {
-      distance <- 0
-      distance.vect[i] <- 1
-    } else if ((v[i] == 0 && v[i+1] ==0) %% (v[i] == 0 && v[i+1] == 1)) {
-      distance <- 0
-      distance.vect[i] <- 0
+  for(i in 1:length(v)) {
+    # if a hit, count increases 
+    if(v[i] == 0) {
+      count.hit <- count.hit + 1
+      hits[i] <- count.hit
     }
-  }
-  return(distance.vect)
-}
-```
-
-```{r}
-distance.funct(song.a)
-```
-
-
-```{r}
-# function to take in a vector of 0s and 1s and calculate cmax
-distance <- function(v) {
-  
-  # set count.one to be 0
-  count.one <- 0
-  
-  # set max to be empty vector
-  max <- c()
-  s <- 0
-  
-  for (i in 1:length(v)) {
-
-    # if it's a miss: count goes up, count is added to max vector, cmax takes the maximum of all values
-    if (v[i] == 0) {
-      count.one <- count.one + 1
-      max[i] <- count.one
-      } else {
-    # if it's a hit count added is 0
-        count.one <- 0
-        max[i] <- 0
-      }
-  for (j in 1:length(max)) {
-    if (max[i+s] != 0)
-      
-  
-    cmax <- max(max)
-  }
-  print(max)
-  # return calculated value of cmax
-  return(cmax)
-}
-```
-
-```{r}
-distance(song.a)
-```
-
-
-
-```{r}
-distance <- function(v) {
-  num.zero <- c()
-  for (i in 1:length(v)) {
-    if (v[i] == 0) {
-      num.zero[i] <- 1
-    } else {
-      num.zero[i] <- 0
+    else
+    {
+      count.hit <- 0
+      hits[i] <- count.hit
     }
+    suppressWarnings(numHits <- hits)
   }
-    return(num.zero)
+  
+  return(numHits)
 }
-  # for (j in 1:length(num.zero)) {
-  #   if (num.zero[j] == 1) {
-  #     distance.vect[j] <- sum(num.zero[1:j])
-  #   }
-  # }
 ```
 
 ```{r}
-distance(song.b)
+song.a <- c(1,0,0,0,0,0,1,0,1,0,0,1,0,0,0,0,1,0,0,0)
+song.b <- c(0,0,0,1,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0)
+song.c <- c(1,0,1,0,1,0,0,0,0,1,1,0,0,0,0,0,0)
+song.d <- c(1,1,1,1,0,1,1,1,1,1,1,1,1,0,0,1,0)
+cat('Total Hits Between Misses: ' , numHits(song.a), '\n')
+cat('Total Hits Between Misses: ' , numHits(song.b), '\n')
+cat('Total Hits Between Misses: ' , numHits(song.c), '\n')
+cat('Total Hits Between Misses: ' , numHits(song.d), '\n')
 ```
+
+
+# Resampling WITHOUT Replacement
+```{r}
+n <- 1000
+perm.resample <- function(v) {
+  shuffled <- matrix(nrow=n, ncol=length(v))
+  for (j in 1:length(v))
+    for (i in 1:n) {
+    shuffled[i,j] <- (sample(v, size = length(v), replace = FALSE))[j]
+  }
+  return(shuffled)
+}
+```
+
+```{r}
+samples.a <- perm.resample(song.a)
+samples.b <- perm.resample(song.b)
+samples.c <- perm.resample(song.c)
+samples.d <- perm.resample(song.d)
+```
+
+
+# H-Test for Cmax
+H0: The notes are missed randomly
+H1: The notes are not missed randomly
+
+## Test Cmax on Resampled Data
+```{r}
+cmax.test <- function(m, song) {
+  cmax.vals <- c()
+  for (i in 1:nrow(m)) {
+    cmax.vals[i] <- cmax(m[i,])
+  }
+  cmax.test.stat <- cmax(song)
+  pval <- 2*min(sum(cmax.vals >= cmax.test.stat), sum(cmax.vals <= cmax.test.stat))/1000
+  return(pval)
+}
+```
+
+## P-Value
+```{r}
+cmax.test(samples.a, song.a)
+cmax.test(samples.b, song.b)
+cmax.test(samples.c, song.c)
+cmax.test(samples.d, song.d)
+```
+
+# H-Test Method 2
+
+## Num of Misses / Num of Miss Streaks on Resampled Data
+```{r}
+method1.test <- function(m,song) {
+  method1.vals <- c()
+  for (i in 1:nrow(m)) {
+    method1.vals[i] <- miss.over.streaks(m[i,])
+  }
+  method1.test.stat <- miss.over.streaks(song)
+  pval <- 2*min(sum(method1.vals >= method1.test.stat), sum(method1.vals <= method1.test.stat))/1000
+  return(pval)
+}
+```
+
+## Pvalue
+```{r}
+method1.test(samples.a, song.a)
+method1.test(samples.b, song.b)
+method1.test(samples.c, song.c)
+method1.test(samples.d, song.d)
+```
+
+
+# H-Test for Method 3
+** Not working **
+## NumHits on resampled Data
+```{r}
+samples.numHits <- function(m) {
+  numHits.vals <- c()
+  for (i in 1:nrow(m)) {
+    numHits.vals[i] <- numHits(m[i,])
+  }
+  return(numHits.vals)
+}
+```
+
+```{r}
+method2.a <- samples.numHits(samples.a)
+method2.b <- samples.numHits(samples.b)
+method2.c <- samples.numHits(samples.c)
+method2.d <- samples.numHits(samples.d)
+```
+distance vectors: 
+song a - (1,4,2)
+song.b - (5,2)
+song.c - (2,6,3)
+song.d - (1,1,1)
+
+
 
