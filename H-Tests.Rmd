@@ -1,0 +1,149 @@
+---
+title: "H-Tests Project"
+author: "Brianna Cirillo"
+output: html_notebook
+---
+
+
+```{r}
+song.a <- c(1,0,0,0,0,0,1,0,1,0,0,1,0,0,0,0,1,0,0,0)
+song.b <- c(0,0,0,1,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0)
+song.c <- c(1,0,1,0,1,0,0,0,0,1,1,0,0,0,0,0,0)
+song.d <- c(1,1,1,1,0,1,1,1,1,1,1,1,1,0,0,1,0)
+
+n.song.a <- length(song.a)
+n.song.b <- length(song.b)
+n.song.c <- length(song.c)
+n.song.d <- length(song.d)
+
+nboot <- 2000
+```
+
+
+```{r}
+bootstraps.a <- c()
+for (i in nboot) {
+  bsample.a <- sample(song.a, n.song.a, replace = TRUE)
+  bootstraps.a <- c(median(bsample.a), bootstraps.a)
+}
+
+boot.sa.a <- matrix(sample(song.a, size = n.song.a * nboot, replace = TRUE), nboot, n.song.a)
+
+bootstat.a <- cmax(boot.sa.a)
+
+for (i in boot.sa.a) {
+  
+}
+
+```
+
+
+```{r}
+bootstrap.cmax <- function(x, y, z){
+  bootstraps <- c()
+  
+  for (i in y) {
+  bsample <- sample(x, z, replace = TRUE)
+  bootstrap <- c(median(bsample), bootstrap)
+}
+
+boot.sa <- matrix(sample(x, size = z * y, replace = TRUE), y, z)
+
+bootstat <- apply(boot.sa, 2, cmax)
+}
+  
+```
+
+```{r}
+a.boot <- bootstrap.cmax(song.a, nboot, n.song.a)
+a.boot
+
+b.boot <- bootstrap.cmax(song.b, nboot, n.song.b)
+b.boot
+
+c.boot <- bootstrap.cmax(song.c, nboot, n.song.c)
+c.boot
+
+d.boot <- bootstrap.cmax(song.d, nboot, n.song.d)
+d.boot
+
+```
+
+```{r}
+notra.1 <- c(1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0)
+cmax(notra.1)
+
+notra.2 <- c(1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0)
+cmax(notra.2)
+
+notra.3 <- c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+cmax(notra.3)
+
+notra.4 <- c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
+cmax(notra.4)
+
+notra.5 <- c(1,1,1,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,1,1,1)
+cmax(notra.5)
+```
+
+```{r}
+bootstrap.method1 <- function(x, y, z){
+  bootstraps <- c()
+  
+  for (i in y) {
+  bsample <- sample(x, z, replace = TRUE)
+  bootstrap <- c(median(bsample), bootstrap)
+}
+
+boot.sa <- matrix(sample(x, size = z * y, replace = TRUE), y, z)
+
+bootstat <- apply(boot.sa, 2, method1)
+}
+  
+```
+
+```{r}
+method1.a <- bootstrap.method1(song.a, nboot, n.song.a)
+method1.a
+
+method1.b <- bootstrap.method1(song.b, nboot, n.song.b)
+method1.b
+
+method1.c <- bootstrap.method1(song.c, nboot, n.song.c)
+method1.c
+
+method1.d <- bootstrap.method1(song.d, nboot, n.song.d)
+method1.d
+```
+
+```{r}
+bootstrap.method2 <- function(x, y, z){
+  bootstraps <- c()
+  
+  for (i in y) {
+  bsample <- sample(x, z, replace = TRUE)
+  bootstrap <- c(median(bsample), bootstrap)
+}
+
+boot.sa <- matrix(sample(x, size = z * y, replace = TRUE), y, z)
+
+bootstat <- apply(boot.sa, 2, method2)
+}
+  
+```
+
+
+```{r}
+method2.a <- bootstrap.method2(song.a, nboot, n.song.a)
+method2.a
+
+method2.b <- bootstrap.method2(song.b, nboot, n.song.b)
+method2.b
+
+method2.c <- bootstrap.method2(song.c, nboot, n.song.c)
+method2.c
+
+method2.d <- bootstrap.method2(song.d, nboot, n.song.d)
+method2.d
+```
+
