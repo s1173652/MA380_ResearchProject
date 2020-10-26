@@ -1,0 +1,68 @@
+---
+title: "Method 2 Distance"
+output: html_notebook
+---
+
+# Method 2
+
+Compute the distance in between every miss
+
+# count number of hits between misses
+```{r}
+numHits <- function(v) {
+  # set number of hits to 0
+  count.hit <- 0
+  
+  # make an empty vector
+  hits <- c()
+  
+  j  <- 1
+  
+  distance <- c()
+  
+  for(i in 1:length(v)) {
+    # if a hit, count increases 
+    if (isTRUE(v[1] == 0)) {
+      
+    }
+    if(v[i] == 0) {
+      count.hit <- count.hit + 1
+      hits[i] <- count.hit
+    }
+    else
+    {
+      count.hit <- 0
+      hits[i] <- count.hit
+    }
+    for (j in 1:length(v)-1) {
+      if (isTRUE(hits[i] == 0 & hits[i+j] == 0)) {
+        distance[i] <- hits[i+j-1]
+        j <- j+1
+        } else {
+          j<- j+1
+        }
+      }
+    suppressWarnings(numHits <- hits)
+  }
+  distance <- distance[!is.na(distance)]
+  distance <- distance[distance!=0]
+  if (v[1] == 0) {
+    distance <- distance[2:length(song.a)]
+    distance <- distance[!is.na(distance)]
+  } else {
+    distance <- distance
+  }
+  return(distance)
+}
+```
+
+```{r}
+song.a <- c(1,0,0,0,0,0,1,0,1,0,0,1,0,0,0,0,1,0,0,0)
+song.b <- c(0,0,0,1,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0)
+song.c <- c(1,0,1,0,1,0,0,0,0,1,1,0,0,0,0,0,0)
+song.d <- c(1,1,1,1,0,1,1,1,1,1,1,1,1,0,0,1,0)
+cat('Total Hits Between Misses: ' , numHits(song.a), '\n')
+cat('Total Hits Between Misses: ' , numHits(song.b), '\n')
+cat('Total Hits Between Misses: ' , numHits(song.c), '\n')
+cat('Total Hits Between Misses: ' , numHits(song.d), '\n')
+```
