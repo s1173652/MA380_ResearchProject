@@ -363,3 +363,39 @@ methodRuns.test(songAParam)
 methodRuns.test(songBParam)
 methodRuns.test(songCParam)
 ```
+
+# Try Runs Test on Distances of Resampled Data
+```{r}
+# function to compute distances on each row of resampled matrix
+samples.numHits <- function(m) {
+  
+  numHits.vals <- vector(mode = "list", length = nrow(m))
+  
+  for (i in 1:nrow(m)) {
+    numHits.vals[[i]] <- method2(m[i, ])
+  }
+  return(numHits.vals)
+}
+```
+
+```{r}
+# function to compute runs.test on distances
+runs.test.numHits <- function(list) {
+  
+  for (i in 1:length(list)) {
+    distances <- Reduce(c, list)
+  }
+  
+  test <- runs.test(distances)
+  pval <- test$p.value
+  stat <- test$statistic
+  return(c(pval, stat))
+}
+```
+
+## Testing on Samples of Song a
+```{r}
+runs.test.numHits(samples.numHits(songAParam))
+runs.test.numHits(samples.numHits(songBParam))
+runs.test.numHits(samples.numHits(songCParam))
+```
