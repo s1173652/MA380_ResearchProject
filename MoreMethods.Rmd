@@ -1,0 +1,187 @@
+---
+title: "Additional Methods"
+author: Shannon Coyle
+output: html_notebook
+---
+
+```{r, message=FALSE}
+library(mosaic)
+library(haven)
+library(ggpubr)
+library(readxl)
+library(Rlab)
+
+library(randtests)
+```
+
+# trying the runs test
+```{r}
+method2 <- function(v) {
+  threshold = median(v)
+  
+  runs.test(v, alternative = "left.sided", threshold, pvalue = "exact")
+}
+```
+
+```{r}
+totalMiss <- function(v) {
+  # set hit and miss count to 0
+  count.miss <- 0 
+  count.hit <- 0
+  
+  miss <- c()
+  
+  for (i in 1:length(v)) {
+
+    # if it's a miss: count goes up, count is added to max vector, cmax takes the maximum of all values
+    if (v[i] == 1) {
+      count.miss <- count.miss + 1
+      miss[i] <- count.miss
+      } 
+    else {
+    # if it's a hit count added is 0
+        count.hit <- 0
+        miss[i] <- 0
+      }
+    suppressWarnings(totalMisses <- max(miss))
+  }
+  
+  # return calculated value of total misses
+  return(totalMisses)
+  
+}
+```
+
+# performing a serial test
+```{r}
+serialMethod <- function(v) {
+  count <- 0
+  
+  hits <- c()
+  
+  for(i in 1:length(v)) {
+    if((v[i] == 0) && (v[i + 1] == 1)) {
+        count <- count + 1
+        hits[i] <- count
+    }
+    else {
+      count <- 0
+      hits[i] <- 0
+    }
+    serial <- hits
+  }
+  return(serial)
+}
+```
+
+```{r}
+song.a <- c(1,0,0,0,0,0,1,0,1,0,0,1,0,0,0,0,1,0,0,0)
+song.b <- c(0,0,0,1,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0)
+song.c <- c(1,0,1,0,1,0,0,0,0,1,1,0,0,0,0,0,0)
+song.d <- c(1,1,1,1,0,1,1,1,1,1,1,1,1,0,0,1,0)
+
+serialMethod(song.a)
+#method2(song.b)
+serialMethod(song.a)
+
+```
+
+# splitting song and calculating
+```{r}
+split <- function(v) {
+  # splits the song into five equal parts
+  splitNum <- length(v) / 5
+  med <- 0
+  
+  medians <- c()
+  
+  # increases which part of the song
+  for (j in 1:5) {
+    # gets to the next section of the song
+    for (i in 1:splitNum * j) {
+      # gets the median of the section
+      med[j] <- median(v[i])
+    }
+    # populates the vector
+    medians <- med
+  }
+  
+  return(medians)
+}
+```
+
+```{r}
+song.a <- c(1,0,0,0,0,0,1,0,1,0,0,1,0,0,0,0,1,0,0,0)
+song.b <- c(0,0,0,1,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0)
+song.c <- c(1,0,1,0,1,0,0,0,0,1,1,0,0,0,0,0,0)
+song.d <- c(1,1,1,1,0,1,1,1,1,1,1,1,1,0,0,1,0)
+
+cat('Medians of Song A: ', split(song.a), '\n')
+
+cat('Medians of Song B: ', split(song.b), '\n')
+
+cat('Medians of Song C: ', split(song.c), '\n')
+
+cat('Medians of Song D: ', split(song.d), '\n')
+```
+# count number of hits between misses (Sam's code)
+```{r}
+numHits <- function(v) {
+  # set number of hits to 0
+  count.hit <- 0
+  
+  # make an empty vector
+  hits <- c()
+  
+  j  <- 1
+  
+  distance <- c()
+  
+  for(i in 1:length(v)) {
+    # if a hit, count increases 
+    if (isTRUE(v[1] == 0)) {
+      
+    }
+    
+    if(v[i] == 0) {
+      count.hit <- count.hit + 1
+      hits[i] <- count.hit
+    }
+    else
+    {
+      count.hit <- 0
+      hits[i] <- count.hit
+    }
+    for (j in 1:length(v)-1) {
+      if (isTRUE(hits[i] == 0 & hits[i+j] == 0)) {
+        distance[i] <- hits[i+j-1]
+        j <- j+1
+        } else {
+          j<- j+1
+        }
+      }
+    suppressWarnings(numHits <- hits)
+  }
+  distance <- distance[!is.na(distance)]
+  distance <- distance[distance!=0]
+  if (v[1] == 0) {
+    distance <- distance[2:length(song.a)]
+    distance <- distance[!is.na(distance)]
+  } else {
+    distance <- distance
+  }
+  return(distance)
+}
+```
+
+```{r}
+song.a <- c(1,0,0,0,0,0,1,0,1,0,0,1,0,0,0,0,1,0,0,0)
+song.b <- c(0,0,0,1,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0)
+song.c <- c(1,0,1,0,1,0,0,0,0,1,1,0,0,0,0,0,0)
+song.d <- c(1,1,1,1,0,1,1,1,1,1,1,1,1,0,0,1,0)
+cat('Total Hits Between Misses: ' , numHits(song.a), '\n')
+cat('Total Hits Between Misses: ' , numHits(song.b), '\n')
+cat('Total Hits Between Misses: ' , numHits(song.c), '\n')
+cat('Total Hits Between Misses: ' , numHits(song.d), '\n')
+```
+
