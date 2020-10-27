@@ -4,6 +4,17 @@ author: Shannon Coyle
 output: html_notebook
 ---
 
+## Load installed packages into this working session, called putting them into this library.
+You need to do this every time you reopen a Rmd file or start a new one.
+```{r, message=FALSE}
+library(mosaic)
+library(haven)
+library(ggpubr)
+library(readxl)
+library(Rlab)
+library(boot)
+```
+
 ```{r}
 # function to take in a vector of 0s and 1s and calculate cmax
 cmax <- function(v) {
@@ -145,40 +156,79 @@ cat('Song D: ', method1(song.d), '\n')
 method2 <- function(v) {
   # set number of hits to 0
   count.hit <- 0
+  distance <- c()
+  n <- 0
   
   # make an empty vector
   hits <- c()
   
-  for(i in 1:length(v)) {
-    # if a hit, count increases 
-    if(v[i] == 0) {
-      count.hit <- count.hit + 1
-      hits[i] <- count.hit
+  for (j in 1:length(v)) {
+    for (i in 1:length(v)) {
+      # if a hit, count increases
+      if (v[i] == 0) {
+        count.hit <- count.hit + 1
+        hits[i] <- count.hit
+      }
+      else
+      {
+        count.hit <- 0
+        hits[i] <- count.hit
+      }
+      suppressWarnings(numHits <- hits[i])
     }
-    else
-    {
-      count.hit <- 0
-      hits[i] <- count.hit
-    }
-    suppressWarnings(numHits <- hits)
+    distance <- numHits[j]
   }
   
-  return(numHits)
+  return(distance)
 }
 ```
 
 ## IMPLEMENTING A PARAMETRIC BOOTSTRAP
 # with a Bernoulli distribution
 ```{r}
+boot.dist <- 1000
+
 parametricBootstrap <- function(v) {
-  boot.dist <- 1000
-  sample.diffmedian <- median(song.a)
+  sample.diffmedian <- median(v)
   
-  for (i in 1:boot.dist) {
-    bern.dist1 <- rbern(length(v), .50)
+  sampled <- matrix(nrow = boot.dist, ncol = length(v))
+  
+  for (j in 1:length(v)) {
+    for (i in 1:boot.dist) {
+      sampled[i, j] <- (sample(rbern(length(v), .50)))[j]
+    }
   }
   
-  bern.dist1
+  return(sampled)
+}
+```
+
+# testing Parametric bootstrap function
+```{r}
+song.a <- c(1,0,0,0,0,0,1,0,1,0,0,1,0,0,0,0,1,0,0,0)
+
+#parametricBootstrap(song.a)
+```
+
+# testing method 2
+```{r}
+song.a <- c(1,0,0,0,0,0,1,0,1,0,0,1,0,0,0,0,1,0,0,0)
+
+method2(song.a)
+```
+
+# Cmax with the bootstrap
+```{r}
+cmax.test <- function(m, song) {
+  cmax.vals <- c()
+  
+  for (i in 1:nrow(m)) {
+    cmax.vals[i] <- cmax(m[i,])
+  }
+  cmax.test.stat <- cmax(song)
+  
+  pval <- 2*min(sum(cmax.vals >= cmax.test.stat), sum(cmax.vals <= cmax.test.stat))/1000
+  return(pval)
 }
 ```
 
@@ -191,25 +241,31 @@ song.c <- c(1,0,1,0,1,0,0,0,0,1,1,0,0,0,0,0,0)
 songAParam <- parametricBootstrap(song.a)
 songBParam <- parametricBootstrap(song.b)
 songCParam <- parametricBootstrap(song.c)
+```
 
-cat('--- SONG A ---', '\n', 
-    'Parametric Bootstrap: ', songAParam, '\n',
-    'CMAX Function: ', cmax(songAParam), '\n', 
-    'Method 1: ', method1(songAParam), '\n',
-    'Method 2: ', method2(songAParam), '\n',
-    '\n')
+# testing the bootstrap cmax function
+```{r}
+cmax.test(songAParam, song.a)
+cmax.test(songBParam, song.b)
+cmax.test(songCParam, song.c)
+```
 
-cat('--- SONG B ---', '\n',
-    'Parametric Bootstrap: ', songBParam, '\n',
-    'CMAX Function: ', cmax(songBParam), '\n',
-    'Method 1: ', method1(songBParam), '\n',
-    'Method 2: ', method2(songBParam), '\n',
-    '\n')
+## Num of Misses / Num of Miss Streaks on Resampled Data
+```{r}
+method1.test <- function(m,song) {
+  method1.vals <- c()
+  for (i in 1:nrow(m)) {
+    method1.vals[i] <- miss.over.streaks(m[i,])
+  }
+  method1.test.stat <- miss.over.streaks(song)
+  pval <- 2*min(sum(method1.vals >= method1.test.stat), sum(method1.vals <= method1.test.stat))/1000
+  return(pval)
+}
+```
 
-cat('--- SONG C ---', '\n', 
-    'Parametric Bootstrap: ', songCParam, '\n',
-    'CMAX Function: ', cmax(songCParam), '\n',
-    'Method 1: ', method1(songCParam), '\n', 
-    'Method 2: ', method2(songCParam), '\n',
-    '\n')
+## Pvalue
+```{r}
+method1.test(songAParam, song.a)
+method1.test(songBParam, song.b)
+method1.test(songCParam, song.c)
 ```
