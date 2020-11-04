@@ -1,0 +1,28 @@
+---
+title: "Confidence Interval"
+output: html_notebook
+---
+
+# Confidence Intervals
+
+## Method 1 -- Conf Int on Proportions
+```{r}
+samples.method1 <- function(m) {
+  method1.vals <- vector(length = nrow(m))
+    for (i in 1:nrow(m)) {
+    method1.vals[[i]] <- miss.over.streaks(m[i,])
+    }
+  return(method1.vals)
+}
+```
+
+```{r}
+conf.int <- function (samples) {
+  interval <- quantile(samples.method1(samples), c(0.025, 0.975))
+  return(interval)
+}
+```
+
+```{r}
+conf.int(perm.americanGirl)
+```
