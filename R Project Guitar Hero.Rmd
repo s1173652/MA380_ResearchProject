@@ -7,6 +7,7 @@ output: html_notebook
 # Run this everytime we reopen the R file
 
 ```{r}
+library(snpar)
 library(mosaic)
 library(haven)
 library(ggpubr)
@@ -158,8 +159,6 @@ cat('Song D: ', method1(song.d), '\n')
 ```
 
 ## METHOD 2
-
-# count number of hits between misses
 
 # count number of hits between misses
 ```{r}
@@ -314,6 +313,23 @@ bootstat <- apply(boot.sa, 1, method2)
 ```
 
 ```{r}
+method2.test <- function(m, song) {
+  method2.vals <- c()
+  
+ 
+  for(i in 1:nrow(m)) {
+    method2.vals <- method2(m[i,])
+  }
+  
+  method2.test.stat <- method2(song)
+  
+  suppressWarnings(pval <- 2 * min(sum(method2.vals >= method2.test.stat), sum(method2.vals <= method2.test.stat)) / 1000)
+  return(pval)
+}
+```
+
+
+```{r}
 cat('Bootstrapping Each song Using the Method 2 Function', '\n') 
 cat('Song a: ', bootstrap.method2(song.a, nboot, n.song.a), '\n', '\n')
 cat('Song b: ', bootstrap.method2(song.b, nboot, n.song.b), '\n', '\n')
@@ -444,7 +460,7 @@ method1.test(samples.d, song.d)
 samples.numHits <- function(m) {
   numHits.vals <- c()
   for (i in 1:nrow(m)) {
-    numHits.vals[i] <- numHits(m[i,])
+    numHits.vals[i] <- method2(m[i,])
   }
   return(numHits.vals)
 }
@@ -537,9 +553,7 @@ samples.numHits <- function(m) {
 ```{r}
 # function to compute runs.test on distances
 runs.test.numHits <- function(list) {
-  for (i in 1:length(list)){
-    distances <- Reduce(c,list)
-  }
+  distances <- Reduce(c,list)
   test <- runs.test(distances)
   pval <- test$p.value
   stat <- test$statistic
@@ -548,20 +562,187 @@ runs.test.numHits <- function(list) {
 ```
 
 ```{r}
-runs.test(Reduce(c,samples.numHits(bootsa.a)))
+runs.test.numHits(samples.numHits(bootsa.a))
 ```
 
 ```{r}
-runs.test(Reduce(c,samples.numHits(bootsa.b)))
+runs.test.numHits(samples.numHits(bootsa.b))
 ```
 
 ```{r}
-runs.test(Reduce(c,samples.numHits(bootsa.c)))
+runs.test.numHits(samples.numHits(bootsa.c))
 ```
 
 ```{r}
-runs.test(Reduce(c,samples.numHits(bootsa.d)))
+runs.test.numHits(samples.numHits(bootsa.b))
 ```
+
+# Plots
+
+```{r}
+dist.a <- Reduce(c, samples.numHits(bootsa.a))
+dist.b <- Reduce(c, samples.numHits(bootsa.a))
+dist.c <- Reduce(c, samples.numHits(bootsa.a))
+dist.d <- Reduce(c, samples.numHits(bootsa.a))
+
+length.a <- seq.int(1, length(dist.a), 1)
+length.b <- seq.int(1, length(dist.b), 1)
+length.c <- seq.int(1, length(dist.c), 1)
+length.d <- seq.int(1, length(dist.d), 1)
+
+```
+
+
+```{r}
+plot(length.a, dist.a)
+plot(length.b, dist.b)
+plot(length.c, dist.c)
+plot(length.d, dist.d)
+```
+
+# Real data
+
+## Judith
+
+```{r}
+judith <- read.delim(file = "/Users/briannacirillo/Documents/MA 380/Project/ActualSongFiles/Judith.txt", header = TRUE, sep = " ")
+head(judith)
+
+judith <- as.numeric(judith)
+```
+
+```{r}
+judith.boot <- bootstrap(judith, 1000, length(judith))
+judith.boot1 <- bootstrap(judith, 100, length(judith))
+
+cat('---Test Results for Judith Data---', '\n')
+cat('cmax Test: ', cmax.test(judith.boot, judith),  '\n')
+cat('Method 1 Test: ', method1.test(judith.boot, judith),  '\n')
+cat('Method 2 Test: ', method2.test(judith.boot, judith),  '\n')
+cat('Runs Test: ', runs.test.numHits(samples.numHits(judith.boot1)),  '\n')
+```
+
+
+
+
+## Hurts
+
+```{r}
+hurts <- read.delim(file = "/Users/briannacirillo/Documents/MA 380/Project/ActualSongFiles/Hurts.txt", sep = " ", header = FALSE)
+head(hurts)
+
+hurts <- as.numeric(hurts)
+hurts.boot <- bootstrap(hurts, 100, length(hurts))
+```
+
+```{r}
+cat('---Test Results for Hurts Data---', '\n')
+cat('cmax Test: ', cmax.test(hurts.boot, hurts),  '\n')
+cat('Method 1 Test: ', method1.test(hurts.boot, hurts),  '\n')
+cat('Method 2 Test: ', method2.test(hurts.boot, hurts),  '\n')
+cat('Runs Test: ', runs.test.numHits(samples.numHits(hurts.boot)),  '\n')
+```
+
+## Funky
+
+```{r}
+funky <- read.delim(file = "/Users/briannacirillo/Documents/MA 380/Project/ActualSongFiles/Funky.txt", header = TRUE, sep = " ")
+head(funky)
+
+funky <- as.numeric(funky)
+funky.boot <- bootstrap(funky, 1000, length(funky))
+funky.boot1 <- bootstrap(funky, 100, length(funky))
+```
+
+```{r}
+cat('---Test Results for Funky Data---', '\n')
+cat('cmax Test: ', cmax.test(funky.boot, funky),  '\n')
+cat('Method 1 Test: ', method1.test(funky.boot, funky),  '\n')
+cat('Method 2 Test: ', method2.test(funky.boot, funky),  '\n')
+cat('Runs Test: ', runs.test.numHits(samples.numHits(funky.boot)),  '\n')
+```
+
+## American Girl
+
+```{r}
+americanGirl <- read.delim(file = "/Users/briannacirillo/Documents/MA 380/Project/ActualSongFiles/AmericanGirl.txt", header = TRUE, sep = " ")
+head(americanGirl)
+
+americanGirl <- as.numeric(americanGirl)
+americanGirl.boot <- bootstrap(americanGirl, 2000, length(americanGirl))
+americanGirl.boot1 <- bootstrap(americanGirl, 100, length(americanGirl))
+```
+
+```{r}
+cat('---Test Results for American Girl Data---', '\n')
+cat('cmax Test: ', cmax.test(americanGirl.boot, americanGirl),  '\n')
+cat('Method 1 Test: ', method1.test(americanGirl.boot, americanGirl),  '\n')
+cat('Method 2 Test: ', method2.test(americanGirl.boot, americanGirl),  '\n')
+cat('Runs Test: ', runs.test.numHits(samples.numHits(americanGirl.boot1)),  '\n')
+```
+
+## Wolf
+
+```{r}
+wolf <- read.delim(file = "/Users/briannacirillo/Documents/MA 380/Project/ActualSongFiles/Wolf.txt", header = TRUE, sep = " ")
+head(wolf)
+
+wolf <- as.numeric(wolf)
+wolf.boot <- bootstrap(wolf, 1000, length(wolf))
+wolf.boot1 <- bootstrap(wolf, 100, length(wolf))
+```
+
+```{r}
+cat('---Test Results for Wolf Data---', '\n')
+cat('cmax Test: ', cmax.test(wolf.boot, wolf),  '\n')
+cat('Method 1 Test: ', method1.test(wolf.boot, wolf),  '\n')
+cat('Method 2 Test: ', method2.test(wolf.boot, wolf),  '\n')
+cat('Runs Test: ', runs.test.numHits(samples.numHits(wolf.boot1)),  '\n')
+```
+
+## Watchtower
+
+```{r}
+watchtower <- read.delim(file = "/Users/briannacirillo/Documents/MA 380/Project/ActualSongFiles/Watchtower.txt", header = TRUE, sep = " ")
+head(watchtower)
+
+watchtower <- as.numeric(watchtower)
+watchtower.boot <- bootstrap(watchtower, 1000, length(watchtower))
+watchtower.boot1 <- bootstrap(watchtower, 100, length(watchtower))
+```
+
+```{r}
+cat('---Test Results for Watchtower Data---', '\n')
+cat('cmax Test: ', cmax.test(watchtower.boot, watchtower),  '\n')
+cat('Method 1 Test: ', method1.test(watchtower.boot, watchtower),  '\n')
+cat('Method 2 Test: ', method2.test(watchtower.boot, watchtower),  '\n')
+cat('Runs Test: ', runs.test.numHits(samples.numHits(watchtower.boot1)),  '\n')
+```
+
+
+## Ring of Fire
+
+```{r}
+ringoffire <- read.delim(file = "/Users/briannacirillo/Documents/MA 380/Project/ActualSongFiles/RingofFire.txt", header = TRUE, sep = " ")
+head(ringoffire)
+
+ringoffire <- as.numeric(ringoffire)
+ringoffire.boot <- bootstrap(ringoffire, 1000, length(ringoffire))
+ringoffire.boot1 <- bootstrap(ringoffire, 100, length(ringoffire))
+```
+
+```{r}
+cat('---Test Results for Ring of Fire Data---', '\n')
+cat('cmax Test: ', cmax.test(ringoffire.boot, ringoffire),  '\n')
+cat('Method 1 Test: ', method1.test(ringoffire.boot, ringoffire),  '\n')
+cat('Method 2 Test: ', method2.test(ringoffire.boot, ringoffire),  '\n')
+cat('Runs Test: ', runs.test.numHits(samples.numHits(ringoffire.boot1)),  '\n')
+```
+
+
+
+
+
 
 
 
