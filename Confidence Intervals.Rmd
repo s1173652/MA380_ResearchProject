@@ -1,0 +1,109 @@
+---
+title: "Confidence Intervals"
+output: html_notebook
+---
+
+# Confidence Intervals
+
+## Method 1 -- Conf Int on Proportions
+```{r}
+samples.method1 <- function(m) {
+  method1.vals <- vector(length = nrow(m))
+    for (i in 1:nrow(m)) {
+    method1.vals[i] <- miss.over.streaks(m[i,])
+    }
+  method1.vals <- method1.vals[!is.nan(method1.vals)]
+  return(method1.vals)
+}
+```
+
+```{r}
+conf.int.method1 <- function (samples) {
+  interval <- quantile(samples.method1(samples), c(0.025, 0.975))
+  return(interval)
+}
+```
+
+```{r}
+# proportion of total misses / miss streaks is between interval
+conf.int.method1(perm.americanGirl)
+
+conf.int.method1(perm.funky)
+
+conf.int.method1(perm.hurts)
+
+conf.int.method1(perm.judith)
+
+conf.int.method1(perm.ringoffire)
+
+conf.int.method1(perm.watchtower)
+
+conf.int.method1(perm.wolf)
+```
+
+## Method 2 -- Conf Interval on Median Distance
+```{r}
+conf.int.method2 <- function (list) {
+  medians <- c()
+  for (i in 1:length(list)) {
+    medians[i] <- median(list[[i]])
+  }
+  medians <- medians[!is.null(medians)]
+  medians <- medians[!is.na(medians)]
+  conf.int <- quantile(medians, c(0.025, 0.975))
+  return(conf.int)
+}
+```
+
+```{r}
+conf.int.method2(distances.perm.americanGirl)
+
+conf.int.method2(distances.perm.funky)
+
+#doesn't work for Hurts
+#conf.int.method2(distances.perm.hurts)
+
+conf.int.method2(distances.perm.judith)
+
+conf.int.method2(distances.perm.ringoffire)
+
+conf.int.method2(distances.perm.watchtower)
+
+conf.int.method2(distances.perm.wolf)
+```
+
+## Runs Test -- Confidence Interval on # of Runs
+```{r}
+samples.runs <- function(m) {
+  runs.vals <- vector(length = nrow(m))
+    for (i in 1:nrow(m)) {
+    runs.vals[i] <- runs.test(m[i,])[4]
+    }
+  return(runs.vals)
+}
+```
+
+```{r}
+conf.int.runs <- function (list) {
+  runs.val <- Reduce(c,list)
+  conf.int <- quantile(runs.val, c(0.025, 0.975))
+  return(conf.int)
+}
+```
+
+### Runs Confidence Intervals for Actual Songs
+```{r}
+conf.int.runs(samples.runs(perm.americanGirl))
+
+conf.int.runs(samples.runs(perm.funky))
+
+conf.int.runs(samples.runs(perm.hurts))
+
+conf.int.runs(samples.runs(perm.judith))
+
+conf.int.runs(samples.runs(perm.ringoffire))
+
+conf.int.runs(samples.runs(perm.watchtower))
+
+conf.int.runs(samples.runs(perm.wolf))
+```
