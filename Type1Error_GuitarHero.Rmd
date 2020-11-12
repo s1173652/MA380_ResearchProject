@@ -1,0 +1,314 @@
+---
+title: "Empirical Error Rates"
+author: Shannon Coyle
+output: html_notebook
+---
+
+## Load installed packages into this working session, called putting them into this library.
+You need to do this every time you reopen a Rmd file or start a new one.
+```{r, message=FALSE}
+library(mosaic)
+library(haven)
+library(ggpubr)
+library(readxl)
+library(Rlab)
+
+library(randtests)
+library(snpar)
+```
+
+# Decide on two songs that make the null true
+## NULL: songs are random
+## ALT: songs are NOT random
+```{r}
+randSong1 <- c(0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0)
+```
+
+
+## METHOD 2
+# count number of hits between misses
+```{r}
+method2 <- function(v) {
+  # set number of hits to 0
+  count.hit <- 0
+  
+  # make an empty vector
+  hits <- c()
+  
+  j  <- 1
+  
+  distance <- c()
+  
+  for(i in 1:length(v)) {
+    # if a hit, count increases 
+    if (isTRUE(v[1] == 0)) {
+      
+    }
+    
+    if(v[i] == 0) {
+      count.hit <- count.hit + 1
+      hits[i] <- count.hit
+    }
+    else
+    {
+      count.hit <- 0
+      hits[i] <- count.hit
+    }
+    for (j in 1:length(v)-1) {
+      if (isTRUE(hits[i] == 0 & hits[i+j] == 0)) {
+        distance[i] <- hits[i+j-1]
+        j <- j+1
+        } 
+      else {
+          j<- j+1
+        }
+      }
+    suppressWarnings(numHits <- hits)
+  }
+ 
+   distance <- distance[!is.na(distance)]
+  distance <- distance[distance!=0]
+  
+  if (v[1] == 0) {
+    distance <- distance[2:length(v)]
+    distance <- distance[!is.na(distance)]
+  } 
+  else {
+    distance <- distance
+  }
+  
+  return(distance)
+}
+```
+
+# runs the "runstest" on the data
+```{r}
+methodRuns <- function(v) {
+  threshold = median(v)
+  
+  runs.test(v, alternative = "two.sided", threshold)
+}
+```
+
+## IMPLEMENTING A PARAMETRIC BOOTSTRAP
+# with a Bernoulli distribution
+```{r}
+parametricBootstrap <- function(v, n) {
+  sample.diffmedian <- median(v)
+  
+  sampled <- matrix(nrow = boot.dist, ncol = length(v))
+  
+  for (j in 1:length(v)) {
+    for (i in 1:boot.dist) {
+      sampled[i, j] <- (sample(rbern(length(v), .50)))[j]
+    }
+  }
+  
+  return(sampled)
+}
+```
+
+# Getting the bootstrap of the random song
+```{r}
+randSong1.sample <- parametricBootstrap(randSong1, 100)
+```
+
+# runs test on resampled data
+```{r}
+methodRuns.test <- function(m) {
+  methodRuns.vals <- c()
+
+  for(i in 1:nrow(m)) {
+    methodRuns.vals <- methodRuns(m[i,])
+  }
+
+  return(methodRuns.vals)
+}
+```
+
+# function to compute distances on each row of resampled matrix
+```{r}
+samples.numHits <- function(m) {
+  numHits.vals <- vector(mode = "list", length = nrow(m))
+    
+  for (i in 1:nrow(m)) {
+      numHits.vals[[i]] <- method2(m[i,])
+    }
+ 
+   return(numHits.vals)
+}
+```
+
+# function to compute runs.test on distances
+```{r}
+runs.test.numHits <- function(list) {
+  
+  distances <- Reduce(c,list)
+  
+  test <- runs.test(distances)
+  pval <- test$p.value
+  stat <- test$statistic
+  
+  return(c(pval, stat))
+}
+```
+
+## Runs Test -- Confidence Interval on # of Runs
+```{r}
+samples.runs <- function(m) {
+  runs.vals <- vector(length = nrow(m))
+    
+  for (i in 1:nrow(m)) {
+    runs.vals[i] <- runs.test(m[i,])
+  }
+  
+  return(runs.vals)
+}
+```
+
+```{r}
+samples.method2 <- function(m) {
+  method2.vals <- c()
+  
+  for(i in 1:nrow(m)) {
+    method2.vals[i] <- method2(m[i,])
+  }
+  
+  return(method2.vals)
+}
+```
+
+```{r}
+rand.song <- rbinom(500, 1, 0.5)
+param.rand.song <- parametricBootstrap(rand.song, 100)
+```
+
+```{r}
+runs.test(randSong1.sample[1,])$p.value
+#runs.test.numHits()
+```
+
+# Getting the Type 1 Error of the bootstrap
+```{r}
+error.runs <- function(n) {
+  
+  rand.song <- rbinom(n, 1, 0.5)
+  param.rand.song <- parametricBootstrap(rand.song)
+  
+  runs_pvals <- rep(0, nrow(param.rand.song))
+  
+  for (i in 1:100) {
+    distances <- samples.numHits(param.rand.song)
+    runs_pvals[i] <- runs.test(distances[[i]])$p.value
+  }
+  
+  rej.rate <- mean(runs_pvals < 0.05)
+  
+  return(rej.rate)
+}
+```
+
+
+```{r}
+#error.runs(50)
+```
+1st Simulation RR: 0.04
+2nd Simulation RR: 0.05
+3rd Simulation RR: 0.03
+
+```{r}
+#error.runs(100)
+```
+1st Simulation RR: 0.05
+2nd Simulation RR: 0.02
+3rd Simulation RR: 0.04
+
+# Song that makes the null false
+```{r}
+randSong2 <- c(0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,0, 1, 0, 1, 0, 1,0, 1, 0, 1, 0, 1)
+```
+
+```{r}
+runs.test(randSong2)
+```
+
+```{r}
+null.false.sample <- parametricBootstrap(randSong2, 2000)
+```
+
+```{r}
+find.nonrandom <- function(m) {
+  runs <- c()
+  runs.new <- c()
+  
+  for (i in 1:nrow(m)) {
+    runs[i] <- runs.test(m[i,])$p.value
+    if (runs[i] < 0.05) {
+      runs.new[i] <- runs[i]
+    }
+    else {
+      runs.new[i] <- 0
+    }
+  }
+  
+  new.sample <- null.false.sample[runs.new != 0,]
+  
+  return(new.sample)
+}
+```
+
+```{r}
+find.nonrandom(null.false.sample)
+```
+
+```{r}
+power <- function(m) {
+  runs <- c()
+  runs.new <- c()
+  
+  for (i in 1:nrow(m)) {
+    runs[i] <- runs.test(m[i,])$p.value
+    
+    if (isTRUE(runs[i] < 0.05)) {
+      runs.new[i] <- runs[i]
+    }
+    else {
+      runs.new[i] <- 0
+    }
+  }
+  
+  new.sample <- null.false.sample[runs.new != 0,]
+  
+  runs.pvals <- rep(0, nrow(new.sample))
+  
+  # Calculating the distances on the new sample then performs the runs test
+  for(i in 1:nrow(new.sample)) {
+    distances <- samples.numHits(new.sample)
+    runs.pvals[i] <- runs.test(distances[[i]])$p.value
+  }
+  
+  # Printing the new sample
+  print(new.sample)
+  
+  # Printing the distances
+  print(distances)
+  
+  # Returns which values are complete/valid in the vector
+  print(complete.cases(runs.pvals))
+  
+  # Removes any number that returns NaN
+  runs.pvals <- runs.pvals[!is.nan(runs.pvals)]
+  print(runs.pvals)
+ 
+  # Looks at the powers less than 0.05
+  power <- mean(runs.pvals < 0.05)
+  
+  # Returns the power of the test
+  return(power)
+}
+```
+
+```{r}
+power(null.false.sample)
+```
+
