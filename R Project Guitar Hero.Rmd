@@ -563,7 +563,7 @@ runs.test.numHits <- function(list) {
 ```
 
 ```{r}
-runs.test(Reduce(c,samples.numHits(bootsa.a))), level = 0.95, method = "percentile")
+runs.test(Reduce(c,samples.numHits(bootsa.a)), level = 0.95, method = "percentile")
 ```
 
 ```{r}
@@ -1007,6 +1007,8 @@ too many runs would indicate that the data is going back and forth across a medi
 
 # Error and Power Tests
 
+## Error
+
 ```{r}
 ra.song.1 <-rbinom(500, 1, 0.5)
 boot.ra.1 <- bootstrap(ra.song.1, 2000, length(ra.song.1))
@@ -1015,7 +1017,7 @@ boot.ra.1 <- bootstrap(ra.song.1, 2000, length(ra.song.1))
 ```{r}
 library(snpar)
 
-runs.test(boot.ra.1[1, ])$p.value
+snpar::runs.test(boot.ra.1[1, ])$p.value
 ```
 
 
@@ -1089,6 +1091,239 @@ RR Simulation 3: 0.04
 
 
 
+```{r}
+ra.song.1 <-rbinom(50, 1, 0.5)
+boot.ra.1 <- bootstrap(ra.song.1, 2000, length(ra.song.1))
+```
+
+```{r}
+error.alpha <- function(bootsong, alpha) {
+  pvals.runs <- rep(0, nrow(bootsong))
+  for (i in 1:100) {
+    dist <- samples.numHits(bootsong)
+    pvals.runs[i] <- snpar::runs.test(dist[[i]])$p.value
+  }
+  rr <- mean(pvals.runs < alpha)
+  return(rr)
+}
+```
+
+```{r}
+alpha <- seq(from = .001, to = .1, by = 0.005)
+for(i in 1: length(alpha)) {
+  rr <- error.alpha(boot.ra.1, alpha[i])
+}
+alpha
+rr
+```
+
+```{r}
+pvals.runs <- rep(0, nrow(boot.ra.1))
+for (i in 1:100) {
+  dist <- samples.numHits(boot.ra.1)
+  pvals.runs[i] <- snpar::runs.test(dist[[i]])$p.value
+}
+rr <- mean(pvals.runs < alpha)
+rr
+```
 
 
+```{r}
+empirical <- c()
+
+empirical <- error.alpha(boot.ra.1, alpha[1])
+empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
+empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
+empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
+empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
+empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
+empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
+empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
+empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
+empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
+empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
+empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
+empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
+empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
+empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
+empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
+empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
+empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
+empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
+empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
+
+cat("Empirical Errors:", empirical)
+
+plot(alpha, empirical)
+```
+
+
+
+
+
+```{r}
+plot(alpha, rr, xlab = "Theoretical", ylab = "Empirical", main = "Theoretical vs Empirical Song 1", pch = 16, col = "green")
+```
+
+```{r}
+ra.song.1new <-rbinom(100, 1, 0.5)
+boot.ra.1new <- bootstrap(ra.song.1new, 2000, length(ra.song.1))
+```
+
+```{r}
+alpha <- seq(from = .001, to = .1, by = 0.005)
+for(i in 1: length(alpha)) {
+  rr[i] <- error.alpha(boot.ra.1new, alpha[i])
+}
+alpha
+rr
+```
+
+
+```{r}
+plot(alpha, rr, xlab = "Theoretical", ylab = "Empirical", main = "Theoretical vs Empirical Song 1", pch = 16, col = "green")
+```
+
+
+
+
+```{r}
+ra.song.2 <-rbinom(50, 1, 0.5)
+boot.ra.2 <- bootstrap(ra.song.1, 2000, length(ra.song.1))
+
+alpha <- seq(from = .001, to = .1, by = 0.005)
+for(i in 1: length(alpha)) {
+  rr[i] <- error.alpha(boot.ra.2, alpha[i])
+}
+alpha
+rr
+```
+
+
+
+```{r}
+plot(alpha, rr, xlab = "Theoretical", ylab = "Empirical", main = "Theoretical vs Empirical Song 2", pch = 16, col = "grey")
+```
+
+```{r}
+ra.song.2new <-rbinom(100, 1, 0.5)
+boot.ra.2new <- bootstrap(ra.song.1new, 2000, length(ra.song.1))
+
+alpha <- seq(from = .001, to = .1, by = 0.005)
+for(i in 1: length(alpha)) {
+  rr[i] <- error.alpha(boot.ra.2new, alpha[i])
+}
+alpha
+rr
+```
+
+
+
+```{r}
+plot(alpha, rr, xlab = "Theoretical", ylab = "Empirical", main = "Theoretical vs Empirical Song 2", pch = 16, col = "grey")
+```
+
+
+## Power
+
+# Song that makes the null false
+```{r}
+notra.1 <- c(0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,0, 1, 0, 1, 0, 1,0, 1, 0, 1, 0, 1)
+notra.2 <- c(1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0)
+notra.5 <- c(1,1,1,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,1)
+```
+
+```{r}
+snpar::runs.test(notra.1)
+```
+
+
+```{r}
+find.nonrandom <- function(m) {
+  runs <- c()
+  runs.new <- c()
+  
+  for (i in 1:nrow(m)) {
+    runs[i] <- snpar::runs.test(m[i,])$p.value
+    if (runs[i] < 0.05) {
+      runs.new[i] <- runs[i]
+    }
+    else {
+      runs.new[i] <- 0
+    }
+  }
+  
+  new.sample <- notra.1.boot[runs.new != 0,]
+  
+  return(new.sample)
+}
+```
+
+```{r}
+notra.1.boot <- bootstrap(notra.1, 1500, length(notra.1))
+```
+
+```{r}
+power <- function(m) {
+  runs <- c()
+  runs.new <- c()
+  
+  for (i in 1:nrow(m)) {
+    runs[i] <- snpar::runs.test(m[i,])$p.value
+    
+    if (isTRUE(runs[i] < 0.05)) {
+      runs.new[i] <- runs[i]
+    }
+    else {
+      runs.new[i] <- 0
+    }
+  }
+  
+  new.sample <- notra.1.boot[runs.new != 0,]
+  
+  runs.pvals <- rep(0, nrow(new.sample))
+  
+  # Calculating the distances on the new sample then performs the runs test
+  for(i in 1:nrow(new.sample)) {
+    distances <- samples.numHits(new.sample)
+    runs.pvals[i] <- runs.test(distances[[i]])$p.value
+  }
+
+  
+  # Returns which values are complete/valid in the vector
+  print(complete.cases(runs.pvals))
+  
+  # Removes any number that returns NaN
+  runs.pvals <- runs.pvals[!is.nan(runs.pvals)]
+  print(runs.pvals)
+ 
+  # Looks at the powers less than 0.05
+  power <- format(mean(runs.pvals < 0.05), digits = 10)
+  
+  # Returns the power of the test
+  return(power)
+}
+```
+
+
+
+
+```{r}
+notra.1.boot <- bootstrap(notra.1, 2000, length(notra.1))
+
+power(notra.1.boot)
+```
+
+```{r}
+snpar::runs.test(method2(notra.1))
+
+snpar::runs.test(notra.1)
+
+snpar::runs.test(notra.2)
+
+snpar::runs.test(notra.5)
+
+
+snpar::runs.test(method2(c(0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1)))
+```
 
