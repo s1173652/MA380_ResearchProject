@@ -1089,8 +1089,9 @@ RR Simulation 1: 0.04
 RR Simulation 2: 0.06
 RR Simulation 3: 0.04
 
+## Empirical Error while changing alpha
 
-
+## Song 1 50 observations
 ```{r}
 ra.song.1 <-rbinom(50, 1, 0.5)
 boot.ra.1 <- bootstrap(ra.song.1, 2000, length(ra.song.1))
@@ -1109,61 +1110,44 @@ error.alpha <- function(bootsong, alpha) {
 ```
 
 ```{r}
+rand.song1 <- rbinom(50, 1, 0.5)
+boot.song1 <- bootstrap(rand.song1, 2000, length(rand.song1))
+
+error.runs <- function(boot.rand.song, alpha) {
+  
+  runs_pvals <- rep(0, nrow(boot.rand.song))
+  
+  for (i in 1:100) {
+    distances <- samples.numHits(boot.rand.song)
+    runs_pvals[i] <- snpar::runs.test(distances[[i]])$p.value
+  }
+  
+  rej.rate <- mean(runs_pvals < alpha)
+  
+  return(rej.rate)
+}
+```
+
+```{r}
+error.runs(boot.song1, 0.05)
+error.runs(boot.song1, 0.001)
+```
+
+
+```{r}
 alpha <- seq(from = .001, to = .1, by = 0.005)
 for(i in 1: length(alpha)) {
-  rr <- error.alpha(boot.ra.1, alpha[i])
+  rej.rate[i] <- error.runs(boot.song1, alpha[i])
 }
 alpha
-rr
+cat('Empirical Error:', rej.rate)
 ```
-
-```{r}
-pvals.runs <- rep(0, nrow(boot.ra.1))
-for (i in 1:100) {
-  dist <- samples.numHits(boot.ra.1)
-  pvals.runs[i] <- snpar::runs.test(dist[[i]])$p.value
-}
-rr <- mean(pvals.runs < alpha)
-rr
-```
-
-
-```{r}
-empirical <- c()
-
-empirical <- error.alpha(boot.ra.1, alpha[1])
-empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
-empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
-empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
-empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
-empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
-empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
-empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
-empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
-empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
-empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
-empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
-empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
-empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
-empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
-empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
-empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
-empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
-empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
-empirical <- c(empirical, error.alpha(boot.ra.1, alpha[2]))
-
-cat("Empirical Errors:", empirical)
-
-plot(alpha, empirical)
-```
-
-
-
-
 
 ```{r}
 plot(alpha, rr, xlab = "Theoretical", ylab = "Empirical", main = "Theoretical vs Empirical Song 1", pch = 16, col = "green")
 ```
+
+## Song 1 100 observations
 
 ```{r}
 ra.song.1new <-rbinom(100, 1, 0.5)
@@ -1176,7 +1160,7 @@ for(i in 1: length(alpha)) {
   rr[i] <- error.alpha(boot.ra.1new, alpha[i])
 }
 alpha
-rr
+cat('Empirical Error:', rr)
 ```
 
 
@@ -1184,8 +1168,7 @@ rr
 plot(alpha, rr, xlab = "Theoretical", ylab = "Empirical", main = "Theoretical vs Empirical Song 1", pch = 16, col = "green")
 ```
 
-
-
+## Song 2 50 observations
 
 ```{r}
 ra.song.2 <-rbinom(50, 1, 0.5)
@@ -1196,7 +1179,7 @@ for(i in 1: length(alpha)) {
   rr[i] <- error.alpha(boot.ra.2, alpha[i])
 }
 alpha
-rr
+cat('Empirical Error:', rr)
 ```
 
 
@@ -1204,6 +1187,8 @@ rr
 ```{r}
 plot(alpha, rr, xlab = "Theoretical", ylab = "Empirical", main = "Theoretical vs Empirical Song 2", pch = 16, col = "grey")
 ```
+
+## Song 2 100 observations
 
 ```{r}
 ra.song.2new <-rbinom(100, 1, 0.5)
@@ -1214,7 +1199,7 @@ for(i in 1: length(alpha)) {
   rr[i] <- error.alpha(boot.ra.2new, alpha[i])
 }
 alpha
-rr
+cat('Empirical Error:', rr)
 ```
 
 
@@ -1279,7 +1264,7 @@ power <- function(m) {
     }
   }
   
-  new.sample <- notra.1.boot[runs.new != 0,]
+  new.sample <- m[runs.new != 0,]
   
   runs.pvals <- rep(0, nrow(new.sample))
   
@@ -1305,25 +1290,105 @@ power <- function(m) {
 }
 ```
 
-
-
+## Power with changing alphas
 
 ```{r}
-notra.1.boot <- bootstrap(notra.1, 2000, length(notra.1))
+power.alpha <-  function(m, alpha) {
+  runs <- c()
+  runs.new <- c()
+  
+  for (i in 1:nrow(m)) {
+    runs[i] <- snpar::runs.test(m[i,])$p.value
+    
+    if (isTRUE(runs[i] < 0.05)) {
+      runs.new[i] <- runs[i]
+    }
+    else {
+      runs.new[i] <- 0
+    }
+  }
+  
+  new.sample <- m[runs.new != 0,]
+  
+  runs.pvals <- rep(0, nrow(new.sample))
+  
+  for(i in 1:nrow(new.sample)) {
+    distances <- samples.numHits(new.sample)
+    runs.pvals[i] <- runs.test(distances[[i]])$p.value
+  }
+  
+  runs.pvals <- runs.pvals[!is.nan(runs.pvals)]
 
-power(notra.1.boot)
+  power <- format(mean(runs.pvals < alpha), digits = 10)
+  return(power)
+}
+```
+
+### Trying out the function
+
+```{r}
+power.alpha(boot.ra.1, 0.001)
+power.alpha(boot.ra.1, 0.05)
+```
+
+### Running the function on Bootstrapped samples
+
+```{r}
+alpha <- seq(from = .001, to = .1, by = 0.005)
+power <- c()
+for(i in 1:length(alpha)) {
+  power[i] <- power.alpha(boot.ra.1, alpha[i])
+}
+alpha
+power
 ```
 
 ```{r}
-snpar::runs.test(method2(notra.1))
-
-snpar::runs.test(notra.1)
-
-snpar::runs.test(notra.2)
-
-snpar::runs.test(notra.5)
-
-
-snpar::runs.test(method2(c(0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1)))
+plot(alpha, power, xlab = "Theoretical", ylab = "Empirical", main = "Nonrandom Song 1 (50 Notes)", col = "blue", pch = 16)
 ```
+
+
+```{r}
+alpha <- seq(from = .001, to = .1, by = 0.005)
+power <- c()
+for(i in 1:length(alpha)) {
+  power[i] <- power.alpha(boot.ra.2, alpha[i])
+}
+alpha
+power
+```
+```{r}
+plot(alpha, power, xlab = "Theoretical", ylab = "Empirical", main = "Nonrandom Song 2 (50 Notes)", col = "green", pch = 16)
+```
+
+```{r}
+alpha <- seq(from = .001, to = .1, by = 0.005)
+power <- c()
+for(i in 1:length(alpha)) {
+  power[i] <- power.alpha(boot.ra.1new, alpha[i])
+}
+alpha
+power
+```
+
+```{r}
+plot(alpha, power, xlab = "Theoretical", ylab = "Empirical", main = "Nonrandom Song 1 (100 Notes)", col = "blue", pch = 16)
+```
+
+```{r}
+alpha <- seq(from = .001, to = .1, by = 0.005)
+power <- c()
+for(i in 1:length(alpha)) {
+  power[i] <- power.alpha(boot.ra.2new, alpha[i])
+}
+alpha
+power
+```
+
+```{r}
+plot(alpha, power, xlab = "Theoretical", ylab = "Empirical", main = "Nonrandom Song 2 (100 Notes)", col = "green", pch = 16)
+```
+
+
+
 
