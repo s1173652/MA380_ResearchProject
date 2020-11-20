@@ -1,0 +1,131 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# Run this everytime we reopen the R file
+
+```{r}
+library(snpar)
+library(mosaic)
+library(haven)
+library(ggpubr)
+library(readxl)
+library(Rlab)
+library(boot)
+library(randtests)
+```
+
+# count number of hits between misses
+```{r}
+method2 <- function(v) {
+  # set number of hits to 0
+  count.hit <- 0
+  
+  # make an empty vector
+  hits <- c()
+  
+  j  <- 1
+  
+  distance <- c()
+  
+  for(i in 1:length(v)) {
+    # if a hit, count increases 
+    if (isTRUE(v[1] == 0)) {
+      
+    }
+    
+    if(v[i] == 0) {
+      count.hit <- count.hit + 1
+      hits[i] <- count.hit
+    }
+    else
+    {
+      count.hit <- 0
+      hits[i] <- count.hit
+    }
+    for (j in 1:length(v)-1) {
+      if (isTRUE(hits[i] == 0 & hits[i+j] == 0)) {
+        distance[i] <- hits[i+j-1]
+        j <- j+1
+        } else {
+          j<- j+1
+        }
+      }
+    suppressWarnings(numHits <- hits)
+  }
+  distance <- distance[!is.na(distance)]
+  distance <- distance[distance!=0]
+  if (v[1] == 0) {
+    distance <- distance[2:length(song.a)]
+    distance <- distance[!is.na(distance)]
+  } else {
+    distance <- distance
+  }
+  return(distance)
+}
+```
+
+
+## NumHits on resampled Data
+```{r}
+samples.numHits <- function(m) {
+  numHits.vals <- c()
+  for (i in 1:nrow(m)) {
+    numHits.vals[i] <- method2(m[i,])
+  }
+  return(numHits.vals)
+}
+```
+
+## Bootstrap
+```{r}
+bootstrap <- function(x, nboot, n){
+  bootstraps <- c()
+  
+  for (i in 1:nboot) {
+  bsample <- sample(x, n, replace = TRUE)
+   bootstraps <- c(median(bsample), bootstraps)
+}
+
+boot.sa <- matrix(sample(x, size = n * nboot, replace = TRUE), nboot, n)
+}
+```
+
+```{r}
+ra.song.1 <-rbinom(50, 1, 0.5)
+boot.ra.1 <- bootstrap(ra.song.1, 2000, length(ra.song.1))
+```
+
+```{r}
+error.alpha <- function(bootsong, alpha) {
+  pvals.runs <- rep(0, nrow(bootsong))
+  for (i in 1:100) {
+    dist <- samples.numHits(bootsong)
+    pvals.runs[i] <- snpar::runs.test(dist[[i]])$p.value
+  }
+  rr <- mean(pvals.runs < alpha)
+  return(rr)
+}
+```
+
+```{r}
+alpha <- seq(from = .001, to = .1, by = 0.005)
+for(i in 1: length(alpha)) {
+  rr <- error.alpha(boot.ra.1, alpha[i])
+}
+alpha
+rr
+```
+
+```{r}
+pvals.runs <- rep(0, nrow(boot.ra.1))
+for (i in 1:100) {
+  dist <- samples.numHits(boot.ra.1)
+  pvals.runs[i] <- snpar::runs.test(dist[[i]])$p.value
+}
+rr <- mean(pvals.runs < alpha)
+rr
+```
+
+

@@ -1,0 +1,71 @@
+---
+title: "Power"
+output: html_notebook
+---
+
+```{r}
+power <- function(nonrand.song, n) {
+  # setting up empty vectors and empty list
+  runs.new <- c()
+  j <- c()
+  c <- c()
+  k <- c()
+  runs.pvals <- rep(0, nrow(new.mat))
+  distances.2 <- vector(mode = "list")
+  
+  # resampling
+  perm.nonrand <- perm.resample(nonrand.song, n)
+  
+  # runs.test on every sample
+  for (i in 1:n) {
+    runs[i] <- runs.test(perm.nonrand[i,])$p.value
+  }
+  
+  # finding samples with pvalue < 0.05 to guarantee nonrandom
+  for (i in 1:n) {
+    if (isTRUE(runs[i] < 0.05)) {
+      runs.new[i] <- runs[i]
+      } else { 
+        runs.new[i] <- 0
+      }
+  }
+  for (i in 1:n) {
+    if (isTRUE(runs.new[i] != 0)) {
+      j <- c(j,i)
+    }
+  }
+  
+  # matrix of only nonrandom samples
+  new.mat <- perm.nonrand[j,]
+  
+  # distances of samples
+  for (i in 1:nrow(new.mat)){
+    distances.new <- samples.numHits(new.mat)
+  }
+  
+  # getting distances of only length 3 or greater (so runs.test will work)
+  for (i in 1:length(distances.new)) {
+  k[i] <- length(distances.new[[i]]) >= 3
+  }
+  for (i in 1:length(k)){
+    if (isTRUE(k[i])) {
+      c <- c(c,i)
+      c <- c[!is.na(c)]
+    }
+  }
+  for (i in 1:length(c)){
+    distances.2[[i]] <- distances.new[[c[i]]]
+  }
+  
+  # runs.test on new distance list
+  for (i in 1:length(distances.2)) {
+    runs.pvals[i] <- runs.test(distances.2[[i]])$p.value
+  }
+  
+  # pvalues and power
+  runs.pvals <- runs.pvals[!is.nan(runs.pvals)]
+  power <- mean(runs.pvals < 0.05)
+  return(power)
+}
+```
+
