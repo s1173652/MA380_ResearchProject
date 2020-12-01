@@ -241,12 +241,12 @@ proc.time()-beg
 
 
 # Use the p-values for all simulated songs for each scenario to approximate the power of your method under each type of alternative
-power=matrix(0,8,3)  # allocate space for the approximated power
-alpha=c(0.01,0.05,0.10)  # defines alpha (Type I error) levels
+power=matrix(0,8,5)  # allocate space for the approximated power
+alpha=c(0.001, 0.005, 0.01, 0.05, 0.10)  # defines alpha (Type I error) levels
 
 # loops through each scenario and level of alpha to find power
 for(i in 1:8){
-  for(j in 1:3){
+  for(j in 1:5){
      power[i,j]=mean(pval[i,]<alpha[j])  # number of p-values less than alpha divided by total number of p-values
   }
 }
