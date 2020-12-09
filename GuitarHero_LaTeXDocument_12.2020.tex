@@ -19,8 +19,12 @@ This report explains the methodology used in order to test the randomness of a s
 
 \section{METHODOLOGY}
 \subsection{Method 1}
+The first method looks at the proportion of the number of miss streaks over the number of total misses.  A streak was definied as one or more misses in a row since it was easier with the code and some samples did not have that many streaks to look at.  From this method, we discovered that the proportion does not tell us anything about the location of the misses.  This proved to be difficult to determine randomness of misses without knowing the exact location of them.  
 
 \subsection{Method 2}
+The second method calculates the distances between misses in a song.  The idea behind this method was that if we can see where the misses are occurring, we can see if they are random.  We can seeing where the distances are occuring randomly and conclude that the misses must also be occurring randomly. 
+
+There was an attempt to use a median distance as a basis rather than the mean because the distances were varied, so the average would not tell us that much.  This led to a problem because a lot of the songs had long miss streaks, which lead to a distance of 0, so the median would also become zero.  With this small issue, it led to the idea of use the runs test on this method and, therefore, the distances.  
 
 \subsection{Runs Test}
 
