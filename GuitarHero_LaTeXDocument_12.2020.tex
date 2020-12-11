@@ -27,6 +27,16 @@ The second method calculates the distances between misses in a song.  The idea b
 There was an attempt to use a median distance as a basis rather than the mean because the distances were varied, so the average would not tell us that much.  This led to a problem because a lot of the songs had long miss streaks, which lead to a distance of 0, so the median would also become zero.  With this small issue, it led to the idea of use the runs test on this method and, therefore, the distances.  
 
 \subsection{Runs Test}
+Knowing that the runs test is a preconceived test for randomness, the idea behind using this was to use it on the distances of misses within a song, rather than just using it on the song. As mentioned previously if a conclusion can be reached that the distances are random, this would imply randomness of the misses in the song. 
+
+A run is defined as a series of increasing or decreasing values, while the number of values in each series is the length of each run. The number of runs in a data set is crucial because this is the number that is used to derive the test statistic. The other values involved in deriving the test statistics is the exected number of runs, the median value of the data sample, and the number of values below and above the median.
+
+\subsection{Resampling Methods}
+\subsubsection{Parametric Bootstrap}
+The Parametric Bootstrap was used to generate a bootstrap using a parameterized distribution.  It takes in a specified number of resamples then performs a Bernoulli distribution in order to resample the data.  The Bernoulli distribution looks at the sample size then the event probability, which was set to 50\% since the data is composed of 0's and 1's.  This goes through and resamples the data as either a 0 or a 1 for the specified number of resamples that was initialized.   
+
+\subsubsection{Permutation Tests}
+\subsubsection{Regular Bootstrap}
 
 
 \section{EMPIRICAL TYPE 1 ERROR AND POWER SIMULATIONS}
