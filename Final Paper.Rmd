@@ -1,180 +1,58 @@
 ---
-title: "Creating a Test Statistic to Find if the Number of Misses in a Song from Guitar Hero is Random"
-author: "Shannon Coyle, Samantha Colucci, and Brianna Cirillo"
-output: html_notebook
+title: "Final Paper"
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
 ---
- 
-\begin{abstract}
-If you use this template and follow the instructions therein,
-your will be able to write a paper using LaTeX.
-\end{abstract}
- 
+
+\documentclass[12pt, letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+\title{Creating a Test Statistic to Find if the Number of Misses in a Song from Guitar Hero is Random}
+\author{Shannon Coyle, Samantha Colucci, and Brianna Cirillo}
+\date{December 2020}
+
+\begin{document}
+\maketitle
+
 \section{INTRODUCTION}
+The game, Guitar Hero, collects information regarding the number of “hits” recorded by the player.  This poses the question about the randomness of the misses in a song and if they are correlated to the difficulty of the part of the song.
 
-Here give an introduction to your research.
+The study investigates the randomness of different songs using varying methods.  These methods looked at the number of miss streaks over the total number of misses, distances between each miss, and using the runs test.  The resampling of the data sets was performed through parametric bootstrapping, permutation tests, and regular bootstrapping. Using resampling and our methods together allowed us to assess the randomness of a given song based on the results. 
 
-\section{TEXTS}
- 
-\subsection{Abstract}
+This report explains the methodology used in order to test the randomness of a song. The methods and resampling used throughout the project gave results for the empirical type 1 error and the power of the test. These methods were applied to different songs, therefore, returning different results. This report will also look at the limitations and future ideas for the project, and how some of our methods worked well while others did not.
 
-Your contribution should  be preceded by a {\it short} Abstract
-of not more than 150 words,
-written as a single paragraph, as above.
+\section{METHODS USED}
 
-\subsection{Formulae}
+\subsection{Method 1}
+The first method looks at the proportion of the number of miss streaks over the number of total misses.  A streak was definied as one or more misses in a row since it was easier with the code and some samples did not have that many streaks to look at.  From this method, we discovered that the proportion does not tell us anything about the location of the misses.  This proved to be difficult to determine randomness of misses without knowing the exact location of them.  
 
-Symbols of variables should  be typed in math mode.
-For example, to get the Greek letter alpha,
-type $\backslash{alpha}$; it should come out looking
-like $\alpha$.
 
-Equations should be numbered consecutively, with the 
-number enclosed in parentheses and placed flush with
-the right-hand margin.
+\subsection{Method 2}
+The second method calculates the distances between misses in a song.  The idea behind this method was that if we can see where the misses are occurring, we can see if they are random.  We can then see where the distances are occuring randomly and conclude that the misses must also be occurring randomly. 
 
-Here is an example of an equation, The Schroedinger
-equation for the wave function $\psi(\vec{x},t)$
-\begin{equation}\label{Schroedinger}
--\frac{\hbar^{2}}{2m}\nabla^{2}\psi+V\psi=E\psi.
-\end{equation}
+There was an attempt to use a median distance as a basis rather than the mean because the distances were varied, so the average would not tell us that much.  This led to a problem because a lot of the songs had long miss streaks, which lead to a distance of 0, so the median would also become zero.  With this small issue, it led to the idea of use the runs test on this method and, therefore, the distances.  
 
-If you want to refer to the equation, you can use
-the {\tt label}, with ($\backslash$ref\{label\}).
-For example, the above equation is (\ref{Schroedinger}).
 
-\subsection{Footnotes}
+\subsection{Runs Test}
+Knowing that the runs test is a preconceived test for randomness, the idea behind using this was to use it on the distances of misses within a song, rather than just using it on the song. As mentioned previously if a conclusion can be reached that the distances are random, this would imply randomness of the misses in the song. 
 
-If unavoidable, footnotes should be placed at the bottom
-of the page in which they are referred to.
+A run is defined as a series of increasing or decreasing values, while the number of values in each series is the length of each run. The number of runs in a data set is crucial because this is the number that is used to derive the test statistic. The other values involved in deriving the test statistics is the exected number of runs, the median value of the data sample, and the number of values below and above the median. 
+\section{Resampling Methods}
 
-\subsection{References}
 
-References should be cited  in the text using numbers within
-square brackets: `example [1],
-example [1, 2], example [1--5]', or alternatively as
-`Ref. [1], Refs. [1] to [5]', and
-`Reference' in full if this word occurs at the
-beginning of a sentence.
-They should {\it appear in consecutive numerical order}
-and should be listed at the end of the text.
-Unless you are near the bottom of the last page of text,
-do {\it not} start a new page for the list of
-references, but continue on the same page.
-Note that in the list of references it is
-unnecessary to state the title of an article or chapter in
-proceedings or in a collection of papers unless a page number
-cannot be quoted, e.g. for future publications.
+\subsection{Parametric Bootstrap}
+\subsection{Permutation Test}
+\subsection{Regular Bootstrap}
 
-For example, here's a reference to the paper
-listed in teh bibliography (at the end):
-Ref.\ \cite{Stump}.
+\section{Empirical Type I Error Rate}
 
-\subsubsection{Figures}
+\section{Power of the Test}
 
-All figures should be quoted in consecutive numerical order
-in the text and should, for example, be referred to as
-`Fig. 3, Figs. 3-5', etc., or `Figure' at the beginning of a
-sentence.
-All figures, diagrams, etc., must remain within the same area.
-
-Figure captions should be brief and, if possible,
-go {\it below} the illustration, e.g. `Fig. 3 A short title'.
-They should be typed in point size 9. Very detailed illustrations may
-require a full page; if necessary, they may be placed sideways on the
-page; when this is done, no text may appear on that page, and the
-caption must also read sideways. 
-
-Where possible, figures should be prepared electronically.
-We can handle Encapsulated Postscript.
-
-Here is an example of a figure.
-
-\begin{figure}
-\label{fig:cc}
-\caption{Example of a figure; but it's empty
-until you provide an eps (encapsulated postscript)
-file. (See the source page.)}
-\begin{center}
-%\includegraphics[scale=0.8]{test.eps}
-%%Uncomment the line above and substitute the filename of your eps file.
-\end{center}
-\end{figure}
-
-\subsubsection{Tables}
-
-Tables should be referred to in the text as Table 1, Tables 2--7.
-They should be centred on the page width, with the table
-number, followed by a brief caption in point size 9, typed
-{\it above} them if possible. For the
-positioning of tables, follow the same rules as those for numbered figures.
-
-\subsection{Appendices}
-
-These should be laid out as the sections in the text,
-except that each appendix should start on a new page.
-They should be numbered consecutively and be referred
-to as Appendix 1, Appendices 1--3, etc. 
-Equations, figures and tables should be
-quoted as Eq. (A.1.1) and Fig. A.1.1, etc.  
-
-\subsection*{Acknowledgements}
-
-If required, acknowledgements  should appear as a section
-immediately before the reference section.
-The acknowledgements section should not be numbered.
-
-%\newpage
-
-\section*{APPENDIX 1 -- PREPARING A CONTRIBUTION IN LATEX}
-
-We can accept contributions prepared using Latex.
-
-\section*{TEXTS}
-
-The standard Latex commands \verb|\section, \subsection and \subsubsection|~
-should be used for headings.
-In the text, leave a blank line after each paragraph.
-References to other documents should be
-made using the \verb|\cite|~command.
-The command \verb|\ref|~should be used to refer to 
-equations, figures and tables within your contribution
-which should be labelled using the \verb|\label|~command within the 
-equation, figure or table environment.
-
-\section*{FORMULAE}
-
-The default Tex format is acceptable for most formulae.
-For numbered equations, the construction \\
-\verb|\begin{equation}|\\ 
-\verb|...|\\
-\verb|\label{name}|\\
-\verb|\end{equation}|\\
-should be used.
-
-\section*{FIGURES}
-
-Figures may be prepared electronically using a variety of
-computer applications, as Encapsulated Postscript files.
-Make sure that the image, when printed, is of high quality.
-To include figures in Latex, a contruction of the form\\
-\verb|\begin{figure}[htbp]|\\
-\verb|\includegraphics[width=xcm]{file_name.eps}|\\
-\verb|\caption{}|\\
-\verb|\label{name}|\\
-\verb|\end{figure}|\\
-should be used.
-Figures may be centred
-using the \verb|\begin{center}... \end{center}| construct
-within the figure environment.
-
-\section*{REFERENCES}
-
-\begin{thebibliography}{99}
-
-\bibitem{Stump}{D. R. Stump, ``How to write a LaTeX paper'',2000.}
-
-\end{thebibliography}
+\section{Final Simulations}
 
 \end{document}
-
-
