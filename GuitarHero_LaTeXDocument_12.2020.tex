@@ -36,14 +36,16 @@ A run is defined as a series of increasing or decreasing values, while the numbe
 The Parametric Bootstrap was used to generate a bootstrap using a parameterized distribution.  It takes in a specified number of resamples then performs a Bernoulli distribution in order to resample the data.  The Bernoulli distribution looks at the sample size then the event probability, which was set to 50\% since the data is composed of 0's and 1's.  This goes through and resamples the data as either a 0 or a 1 for the specified number of resamples that was initialized.   
 
 \subsubsection{Permutation Tests}
-\subsubsection{Regular Bootstrap}
 
+
+\subsubsection{Nonparametric Bootstrap}
+Nonparametric bootstrapping is taking a sample of the same size as the data, from the data, but with replacement. This means that even if a data point is resampled, it can be resampled again. The goal of bootstrapping is to approximate the sampling distribution by simulating the data, then using this resamples data as the real data. This allows for data analysis on data that we are not willing to make assumptions about the parameters. On average, the number of times data was bootstrapped was between 200 and 5000 times. 
 
 \section{EMPIRICAL TYPE 1 ERROR AND POWER SIMULATIONS}
 
 \subsection{Parametric Bootstrap}
 \subsection{Permutation Test}
-\subsection{Regular Bootstrap}
+\subsection{Nonparametric Bootstrap}
 
 
 \section{APPLICATION}
