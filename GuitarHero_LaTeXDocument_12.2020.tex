@@ -49,7 +49,9 @@ The main element of this resampling method, that differentiates it from most oth
 
 
 \section{EMPIRICAL TYPE 1 ERROR AND POWER SIMULATIONS}
-The empirical type 1 error rate looks at the error caused by rejecting a null hypothesis which is true.  In this case, it would reject the song being random when it actually is and accept that the song is non-random.  To perform this, a random song of 0s and 1s is generated based on the number of notes given.  It then performs one of the three resampling methods on the randomly generated song.  It then calculates the distances between misses and the runs test is performed on the distances for each row to return a p-value.
+To look into the empirical type 1 error rates, random songs were created. In order to create the songs,a sample of 50 observations were taken from a binomial distribution with a probability of 0.5. The songs were reampled using each of the aforementioned methods. The distances of misses in the reampled sample, were then calculated. The runs test was then performed on these distances for each alpha from 0.001 to 0.1 that were incremented at 0.005. This therefore returned the average of the p-values that were less that 0.05 for each theoretical alpha. 
+
+For the final power simulations, different scenarios were used in order to create a song that is not random. This means that the songs created should make the null hypothesis false. Doing this will show how well the metrics identify nonrandomness.The scenarios using positive pairwise correlation generated two songs, one with 200 notes and one with 600 notes. The probability model used was that the probability of missing a note was 0.2 and the correlation between any two consecutive notes was 0.3.The scenarios using blocks with different difficulties also created two songs, one with 200 notes and one with 600 notes. For each song created using this scenario, there were easy, medium, hard, and very hard sections. The probability of missing a note in an easy section is 0.01, in a medium section is 0.05, in a hard section 0.25, and in a very hard section is 0.5. The scenarios using the autoregressive model of order 1 generated six songs, three with 200 notes and three with 600 notes. The probability model used for the first type is the probability of missing a note is 0.1 and the correlation between any two notes is $0.5^{\mid i-j \mid}$. For the probability model for the second type, the proability of missing a note stayed 0.1, but the correlation between any two notes is $0.3^{\mid i-j \mid}$. For the third type, the probability of missing a note is 0.2 and the correlation between any two notes is $0.5^{\mid i-j \mid}$.
 
 \subsection{Parametric Bootstrap}
 When resampling with a parametric bootstrap, multiple simulations were run with a varying number of observations - it was usually 50 or 100 observations.  
@@ -126,7 +128,7 @@ AR(1), p=0.2, $\rho = 0.5$, n = 600 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
 \hline
 \end{tabular} \\
 
-From the table, it is evident that most of the values obtained are 0 with exceptions for three of the scenarios.  Aside from the table, the graphs also show the large number of occurrences of 0 as a power.  \\
+From the table, it is evident that most of the values obtained are 0 with exceptions for three of the scenarios.  Aside from the table, the graphs also show the large number of occurrences of 0 as a power.
 
 \begin{figure}[!hb]
 \centering
@@ -144,14 +146,84 @@ From the table, it is evident that most of the values obtained are 0 with except
 
 
 \subsection{Permutation Test}
-\subsection{Regular Bootstrap}
+\subsection{Non-Parametric Bootstrap}
+\subsubsection{Empirical Type 1 Error} 
+By taking 50 samples from the binomial distribution, the resulting random song was:
+\begin{gather*}
+  0 1 0 0 0 1 0 0 1 1 0 1 0 1 1 1 1 1 1 1 0 
+  1 0 0 1 1 0 0 1 0 0 1 0 0 0 1 0 1 0 1 0 0
+  0 1 0 1 1 1 1 0
+\end{gather*} 
+To resample the data, the nonparametric bootstrap was used and the song was resampled 100 times. The runs test was then performed on the distances of misses in the bootstrapped sample. This returned the average of the p-values that were less that 0.05 for each theoretical alpha, whis can be seen in the table below.
+\begin{table}[t]
+\begin{center}
+\begin{tabular}{|c|c|}
+\textbf{Type 1 Error} & \textbf{Random Song 1}\\
+$\alpha = 0.001$ & 0.00\\
+$\alpha = 0.005$ &  0.00\\
+$\alpha = 0.006$ &  0.00\\
+$\alpha = 0.007$ & 0.00\\
+$\alpha = 0.008$ & 0.02\\
+$\alpha = 0.009$ & 0.02\\
+$\alpha = 0.01$ & 0.02\\
+$\alpha = 0.02$ & 0.03\\
+$\alpha = 0.03$ & 0.03\\
+$\alpha = 0.04$ & 0.05\\
+$\alpha = 0.05$ &  0.05\\
+$\alpha = 0.06$ &  0.05\\
+$\alpha = 0.07$ &  0.05\\
+$\alpha = 0.08$ &  0.06\\
+$\alpha = 0.09$ & 0.07\\
+$\alpha = 0.1$ & 0.08 \\ 
+\end{tabular}
+\end{center}
+\caption{A function was created to loop through p-values from 0.001 to 0.1 that incremented by 0.005, in order to  generate the Type 1 Error Rates. The table above shows the rates obtained with their respective alpha.}
+
+\label{fig: Type 1 Error Rates for Nonparametric Bootstrap}
+\end{table}
+
+The empirical alpha seems to very roughly, match the theoretical alphas. Although, the empirical alphas were not increasing consistently. They would get stuck at certain alphas such as 0.02 and 0.05. Therefore, the theoretical alphas are increasing at a faster rate than the empirical alphas are.
+
+\subsubsection{Final Power Simulations}
+For the final power simulations, 
+\begin{table}[t]
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{Type 1 Error Rate Scenario} & $\alpha = 0.001$ &  $\alpha = 0.005$ &  $\alpha = 0.01$ &  $\alpha = 0.05$ &  $\alpha = 0.10$ \\
+\hline
+Neg. Pair Correlation, n = 200 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+Neg. Pair Correlation, n = 600 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+Blocks, n = 200 & 0.00 & 0.04 & 0.04 & 0.04 & 0.04 \\
+\hline
+Blocks, n = 600 & 0.00 & 0.01 & 0.01 & 0.01 & 0.01 \\
+\hline
+AR(1), p=0.1, $\rho = 0.5$, n = 200 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+AR(1), p=0.1, $\rho = 0.5$, n = 600 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+AR(1), p=0.1, $\rho = 0.3$, n = 200 & 0.00 & 0.00 & 0.00 & 0.01 & 0.01 \\
+\hline
+AR(1), p=0.1, $\rho = 0.3$, n = 600 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+AR(1), p=0.2, $\rho = 0.5$, n = 200 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+AR(1), p=0.2, $\rho = 0.5$, n = 600 & 0.00 & 0.01 & 0.01 & 0.01 & 0.01 \\
+\hline
+\end{tabular}
+\end{center}
+\caption{The table shows the power at each theoretical alpha for each of the scenarios above.}
+\label{fig: Power Simulations using Nonparametric Bootstrap}
+\end{table}
+
 
 
 \section{APPLICATION}
 To obtain a p-value for each song, 100 bootstraps were performed to change the 0's and 1's to different orders and sequences.  Previously, 1000 bootstraps were being done, but it was taking a significant amount of time to return a p-value.  The null hypothesis being followed is that the songs are random and the alternative hypothesis is that the songs are not random. 
 
 \subsection{Song 1: "Judith"}
-
 \subsubsection{Parametric Bootstrap}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -163,12 +235,20 @@ Runs Test & 0.512 \\
 \hline
 \end{tabular}
 
-
 \subsubsection{Permutation Tests}
-\subsubsection{Regular Bootstrap}
+
+\subsubsection{Non-Parametric Bootstrap}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0 \\
+\hline
+Runs Test & 0.998 \\ 
+\hline
+\end{tabular}
 
 \subsection{Song 2: "Hurts"}
-
 \subsubsection{Parametric Bootstrap}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -180,9 +260,19 @@ Runs Test & 0.512 \\
 \hline
 \end{tabular}
 
+\subsubsection{Nonparametric Bootstrap}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0.186  \\
+\hline
+Runs Test & 0.459 \\ 
+\hline
+\end{tabular}
+
 \subsection{Song 3: "American Girl"}
 \subsubsection{Parametric Bootstrap}
-
 \begin{tabular}{|c|c|}
 \hline
 \textbf{Method Type} & P-Value \\
@@ -193,9 +283,19 @@ Runs Test & 0.211 \\
 \hline 
 \end{tabular}
 
+\subsubsection{Nonparametric Bootstrap}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0  \\
+\hline
+Runs Test & 0.841 \\ 
+\hline
+\end{tabular}
+
 \subsection{Song 4: "Funky"}
 \subsubsection{Parametric Bootstrap}
-
 \begin{tabular}{|c|c|c|}
 \hline
 \textbf{Method Type} & P-Value \\
@@ -206,9 +306,19 @@ Runs Test & 0.08  \\
 \hline
 \end{tabular}
 
+\subsubsection{Nonparametric Bootstrap}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0  \\
+\hline
+Runs Test & 0.656 \\ 
+\hline
+\end{tabular}
+
 \subsection{Song 5: "Ring of Fire"}
 \subsubsection{Parametric Bootstrap}
-
 \begin{tabular}{|c|c|c|}
 \hline
 \textbf{Method Type} & P-Value  \\
@@ -219,9 +329,19 @@ Runs Test & 0.44 \\
 \hline
 \end{tabular}
 
+\subsubsection{Nonparametric Bootstrap}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0  \\
+\hline
+Runs Test & 0.317 \\ 
+\hline
+\end{tabular}
+
 \subsection{Song 6: "Watchtower"}
 \subsubsection{Parametric Bootstrap}
-
 \begin{tabular}{|c|c|c|}
 \hline
 \textbf{Method Type} & P-Value  \\
@@ -231,9 +351,20 @@ Method 1 & 2.204 $[e^{-16}]$ \\
 Runs Test & 0.66 \\ 
 \hline
 \end{tabular}
+
+\subsubsection{Nonparametric Bootstrap}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0  \\
+\hline
+Runs Test & 0.727 \\ 
+\hline
+\end{tabular}
+
 \subsection{Song 7: "Wolf"}
 \subsubsection{Parametric Bootstrap}
-
 \begin{tabular}{|c|c|c|}
 \hline
 \textbf{Method Type} & P-Value  \\
@@ -241,6 +372,17 @@ Runs Test & 0.66 \\
 Method 1 & 2.204 $[e^{-16}]$ \\
 \hline
 Runs Test & 0.58 \\ 
+\hline
+\end{tabular}
+
+\subsubsection{Nonparametric Bootstrap}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0.02  \\
+\hline
+Runs Test & 0.727 \\ 
 \hline
 \end{tabular}
 
@@ -256,7 +398,7 @@ Runs Test & 0.58 \\
 \label{fig: Parametric Bootstrap Code}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!hb]
 \centering
 \includegraphics[width=10cm]{Type1ErrCode.png}
 \caption{Code to get the Type 1 error of the inputted song}
@@ -282,6 +424,11 @@ Runs Test & 0.58 \\
 \subsection{Brianna Cirillo}
 \subsection{Samantha Colucci}
 \subsection{Shannon Coyle}
+From this course, I've definitely gained more knowledge about R Studio and how to perform functions, equations, and other features along with new statistics skills.  In previous courses, I understood the math behind confidence intervals and p-values, but this course truly helped me understand the application and importance of those two components.  It was different learning statistics to apply it to actual data as opposed to just doing the math for homework and tests to get a grade.  When researching, I learned that ideas are not going to work 100\% of the time and that is okay, trial-and-error is an integral part of research that everyone has to go through.  I was also able to learn more from my peers than from the professor because we have a different understanding of topics than a professor does.  I can confidently say that I have a better understanding of statistics after getting explanations from my peers instead of being taught on a whiteboard by someone who has somewhat mastered the topic.  Taking this class has made me more interested in the data science aspect of computer science, whereas, before this course I was on the fence about the crossover between coding and mathematics.  For my future, this course has given me another coding language that I can say that I understand as well as showing me the importance of data and computing.  
+
+I definitely learned a lot about myself by taking this course - both good and bad attributes.  My patience could use some work when it comes to coding, when things would not work the way I wanted to it made me feel like a failure and I would give up.  I did learn that not even the best coders can get these things right the first time.  I also realized that I can work in groups and with whatever I do in my future, I will have to work with others in the technological world.  It was helpful to have Bri and Sam pick me up when I was down and help me understand any of the information that I was struggling to grasp.  They truly helped me with my stress and frustrations, but aside from that, I would take breaks if I found myself getting overly frustrated and remind myself that we were trying to do something that most people will not even attempt in their lifetime.  I was definitely surprised about how I was able to pick up some of the math concepts and then try to figure them out in R.  In the beginning of this class, I was convinced I should not be in it because I felt dumber than everyone else.  After this semester, I've realized that if I should not have been in the class, Dr. B would not have asked me to take it.  I've seen a lot of personal growth this semester, and I am really glad I was able to take this class.  
+
+For the future of this course, I would have mini lessons about the homeworks we did in the beginning of the semester.  I was struggling to fully understand the material and I think having small lessons led by Dr. B would have helped me fully get the topic at hand.  I think the diaries are really important to the course, so I would keep those as well as presenting the homeworks to everyone else in the class.  I think that giving both assignments for the week at the same time would be beneficial if the days between classes aren't that spread out.  One of the hardest parts was finding time to do the second assignment for the week when we only had one full day to complete it.  Other than that, I truly loved this course and I am so glad I was able to take it.  
 
 
 \end{document}
