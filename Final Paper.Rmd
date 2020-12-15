@@ -131,7 +131,15 @@ $\alpha = 0.09$ & 0.11\\
 $\alpha = 0.1$ & 0.11 \\
 \end{tabular}
 
-The empirical alphas are mostly the same as the theoretical alphas. The empirical alphas, however, do not increase as nicely as the theoretical alphas do, due to how the test performed at each level. For the most part, these empirical alphas match the theoretical alphas. 
+The empirical alphas are mostly the same as the theoretical alphas. The empirical alphas, however, do not increase as nicely as the theoretical alphas do, due to how the test performed at each level. For the most part, these empirical alphas match the theoretical alphas. This is displayed in the graph below.
+
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=10cm]{EmpiricalvsTheoreticalAlpha.png}
+\caption{Empirical vs. Theoretical Alpha for the computed random song}
+\label{fig: Empirical vs Theoretical Alpha (Permutation Resampling)}
+\end{figure}
+
 
 \subsubsection{Final Power Simulations}
 A similar method was used for these power simulations, however once the random song was resampled with the permutation method, 10 different methods were used in order to ensure the test was being used on songs that were nonrandom. This should give us a larger empirical alpha since the null hypothesis is known to be nonrandom. Below is a table of the outcomes of the test run with these 10 different methods.
@@ -558,5 +566,12 @@ In addition, a new method to look into would be the Serial Method.
 \caption{Calculates the power of the test being performed on the song}
 \label{fig: Power Code}
 \end{figure}
+
+\section{PERSONAL REFLECTIONS}
+\subsection{Brianna Cirillo}
+\subsection{Samantha Colucci}
+This course was extremely beneficial for me in many different aspects. Prior to this semester I had little background in advanced statistics, only having taken Prob&Stats II and having some practice from Consulting last semester. However, this class I learned a lot about the methodology behind statistical methods including how they are formed and how to form one on our own. I learned that when researching new methods, I work best with examples that are well explained and examples that I can recreate on my own. I also learned that it is necessary to learn a new topic one step at a time, rather than all at once, and to start with simpler examples. Though we ran into a lot of issues, I learned that this was okay and that it was actually a part of the process, regardless of how frustrating it can be. I was surprised with how much I actually enjoyed this process of trial and error because of how frustrating it was to me. However, once I accepted that I might not be able to figure everything out all at once, it became a more enjoyable process that almost became like a game. Due to this new found interest I will definitely want to experience more of this and will hopefully be able to do this more in my future. This course taught me a lot about how I learn and what works best for me when learning topics from readings and code. I feel that with a good combination of the two, I am able to grasp a new topic fairly well, and I can fully grasp it with some examples. A major thing I learned about myself is that I have a need to figure things out, and when I can’t I usually won’t stop working at it until I can. This happened many times during this research when I was trying to figure out how to write a new code or how to modify our method. I also learned that I enjoy working with other people because I like bouncing ideas off of others and hearing their ideas to see if it changes mine in any way. My group was a great to have when doing this project because everyone was helpful and was able to contribute a lot to the research. I also feel that me and my group both had a growth of self-confidence when dealing with this research, because as the semester continued we, most of the time, had a better and better grasp on what we needed to do. To improve the course, I would suggest discussing in detail the readings and assignments due in the beginning of the semester. I feel that if we had more of a discussion and went over the topics as a group the ideas would have stuck in my head better. I also feel that for some of the assignments for the research we needed more time to complete them and ask questions about what needed to be done. Other than that, I think this course was formatted really well and I loved how it was setup compared to other classes. This has definitely been one of my favorite classes that I have taken at Monmouth and I am grateful to have had this experience.
+
+\subsection{Shannon Coyle}
 
 \end{document}
