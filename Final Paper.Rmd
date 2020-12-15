@@ -1,10 +1,3 @@
----
-title: "R Notebook"
-output:
-  pdf_document: default
-  html_notebook: default
----
-
 \documentclass[12pt, letterpaper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
@@ -21,7 +14,6 @@ output:
 The game, Guitar Hero, collects information regarding the number of “hits” recorded by the player.  This poses the question about the randomness of the misses in a song and if they are correlated to the difficulty of the part of the song.
 
 The study investigates the randomness of different songs using varying methods.  These methods looked at the number of miss streaks over the total number of misses, distances between each miss, and using the runs test.  The resampling of the data sets was performed through parametric bootstrapping, permutation tests, and regular bootstrapping. Using resampling and our methods together allowed us to assess the randomness of a given song based on the results. 
-
 This report explains the methodology used in order to test the randomness of a song. The methods and resampling used throughout the project gave results for the empirical type 1 error and the power of the test. These methods were applied to different songs, therefore, returning different results. This report will also look at the limitations and future ideas for the project, and how some of our methods worked well while others did not.
 
 \section{METHODOLOGY}
@@ -53,21 +45,463 @@ The permutation resampling method is a type of randomization that was developed 
 
 The main element of this resampling method, that differentiates it from most other methods, is that it resamples *without* replacement. Essentially, it redistributes the original elements of the data in a different order. Though this sampling can be beneficial to use here since the distribution of our data is unknown, it also presents issues when checking for randomness. For example, if there is a detectable pattern in a specific song or sample, the permutation resampling may cause the presence of that pattern to disappear, due to the way the resampling is done. When this became an issue during the research, a different approach was taken to ensure that if the songs being analyzed do have a pattern, that pattern is not lost. This is discussed more in the Power of the Test section. 
 
-\subsubsection{Regular Bootstrap}
-
+\subsubsection{Nonparamteric Bootstrap}
+Nonparametric bootstrapping is taking a sample of the same size as the data, from the data, but with replacement. This means that even if a data point is resampled, it can be resampled again. The goal of bootstrapping is to approximate the sampling distribution by simulating the data, then using this resamples data as the real data. This allows for data analysis on data that we are not willing to make assumptions about the parameters. On average, the number of times data was bootstrapped was between 200 and 5000 times. 
 
 \section{EMPIRICAL TYPE 1 ERROR AND POWER SIMULATIONS}
+To look into the empirical type 1 error rates, random songs were created. In order to create the songs,a sample of 50 observations were taken from a binomial distribution with a probability of 0.5. The songs were resampled using each of the aforementioned methods. The distances of misses in the resampled sample, were then calculated. The runs test was then performed on these distances for each alpha from 0.001 to 0.1 that were incremented at 0.005. This therefore returned the average of the p-values that were less that 0.05 for each theoretical alpha. For the final power simulations, different scenarios were used in order to create a song that is not random. This means that the songs created should make the null hypothesis false. Doing this will show how well the metrics identify nonrandomness.
 
 \subsection{Parametric Bootstrap}
-\subsection{Permutation Test}
-\subsection{Regular Bootstrap}
+\subsubsection{Empirical Type 1 Error} 
 
+\begin{tabular}{|c|c|}
+\textbf{Type 1 Error} & \textbf{Random Song 1}\\
+$\alpha = 0.001$ & 0.00\\
+$\alpha = 0.005$ &  0.01\\
+$\alpha = 0.006$ &  0.01\\
+$\alpha = 0.007$ & 0.01\\
+$\alpha = 0.008$ & 0.01\\
+$\alpha = 0.009$ & 0.01\\
+$\alpha = 0.01$ & 0.01\\
+$\alpha = 0.02$ & 0.01\\
+$\alpha = 0.03$ & 0.01\\
+$\alpha = 0.04$ & 0.01\\
+$\alpha = 0.05$ &  0.03\\
+$\alpha = 0.06$ &  0.06\\
+$\alpha = 0.07$ &  0.08\\
+$\alpha = 0.08$ &  0.08\\
+$\alpha = 0.09$ & 0.08\\
+$\alpha = 0.1$ & 0.08 \\
+\end{tabular}
+
+\subsubsection{Final Power Simulations}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{Type 1 Error Rate Scenario} & $\alpha = 0.001$ &  $\alpha = 0.005$ &  $\alpha = 0.01$ &  $\alpha = 0.05$ &  $\alpha = 0.10$ \\
+\hline
+Neg. Pair Correlation, n = 200 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+Neg. Pair Correlation, n = 600 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+Blocks, n = 200 & 0.00 & 0.03 & 0.03 & 0.11 & 0.30 \\
+\hline
+Blocks, n = 600 & 0.00 & 0.00 & 0.01 & 0.02 & 0.08 \\
+\hline
+AR(1), p=0.1, $\rho = 0.5$, n = 200 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+AR(1), p=0.1, $\rho = 0.5$, n = 600 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+AR(1), p=0.1, $\rho = 0.3$, n = 200 & 0.00 & 0.00 & 0.00 & 0.01 & 0.01 \\
+\hline
+AR(1), p=0.1, $\rho = 0.3$, n = 600 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+AR(1), p=0.2, $\rho = 0.5$, n = 200 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+AR(1), p=0.2, $\rho = 0.5$, n = 600 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+\end{tabular}
+\subsection{Permutation Resampling}
+
+\subsubsection{Empirical Type 1 Error} 
+A random song of 50 notes was created by the rbinom() function in Rstudio, which guarantees randomness. This implies that the alpha obtained from the test, the empirical alpha, should project a low rejection rate since the null hypothesis of randomness is known to be true. The resulting random song from this code was:
+\begin{gather*}
+  0 1 1 1 1 1 1 0 0 0 0 0 0 0 0 1 0 0 0 1 0 
+  0 0 0 1 0 1 1 1 1 1 0 0 1 1 1 0 1 0 0 1 1
+  1 0 1 0 0 1 1 0
+\end{gather*} 
+To resample the data, the permutation resampling code was used and the song was resampled 100 times. The runs test was then performed on the distances of misses in each sample. This returned the average of the p-values that were less that 0.05 for each theoretical alpha, this can be seen in the table below.
+
+\begin{tabular}{|c|c|}
+\textbf{Type 1 Error} & \textbf{Random Song 1}\\
+$\alpha = 0.001$ & 0.00\\
+$\alpha = 0.005$ &  0.00\\
+$\alpha = 0.006$ &  0.00\\
+$\alpha = 0.007$ & 0.00\\
+$\alpha = 0.008$ & 0.00\\
+$\alpha = 0.009$ & 0.01\\
+$\alpha = 0.01$ & 0.01\\
+$\alpha = 0.02$ & 0.03\\
+$\alpha = 0.03$ & 0.05\\
+$\alpha = 0.04$ & 0.06\\
+$\alpha = 0.05$ &  0.09\\
+$\alpha = 0.06$ &  0.09\\
+$\alpha = 0.07$ &  0.10\\
+$\alpha = 0.08$ &  0.11\\
+$\alpha = 0.09$ & 0.11\\
+$\alpha = 0.1$ & 0.11 \\
+\end{tabular}
+
+The empirical alphas are mostly the same as the theoretical alphas. The empirical alphas, however, do not increase as nicely as the theoretical alphas do, due to how the test performed at each level. For the most part, these empirical alphas match the theoretical alphas. 
+
+\subsubsection{Final Power Simulations}
+A similar method was used for these power simulations, however once the random song was resampled with the permutation method, 10 different methods were used in order to ensure the test was being used on songs that were nonrandom. This should give us a larger empirical alpha since the null hypothesis is known to be nonrandom. Below is a table of the outcomes of the test run with these 10 different methods.
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{Type 1 Error Rate Scenario} & $\alpha = 0.001$ &  $\alpha = 0.005$ &  $\alpha = 0.01$ &  $\alpha = 0.05$ &  $\alpha = 0.10$ \\
+\hline
+Neg. Pair Correlation, n = 200 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+Neg. Pair Correlation, n = 600 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+Blocks, n = 200 & 0.00 & 0.12 & 0.12 & 0.26 & 0.27 \\
+\hline
+Blocks, n = 600 & 0.00 & 0.08 & 0.09 & 0.16 & 0.27 \\
+\hline
+AR(1), p=0.1, $\rho = 0.5$, n = 200 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+AR(1), p=0.1, $\rho = 0.5$, n = 600 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+AR(1), p=0.1, $\rho = 0.3$, n = 200 & 0.01 & 0.01 & 0.01 & 0.01 & 0.01 \\
+\hline
+AR(1), p=0.1, $\rho = 0.3$, n = 600 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+AR(1), p=0.2, $\rho = 0.5$, n = 200 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+AR(1), p=0.2, $\rho = 0.5$, n = 600 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+\end{tabular}
+
+All of these power values are much lower than desired. They are consistent with previous power tests that were conducted, and all 10 simulations are mostly consistent with each other, however they are not the values that were hoped for. 
+
+\subsection{Regular Bootstrap}
+\subsection{Nonparametric Bootstrap}
+By taking 50 samples from the binomial distribution, the resulting random song was:
+\begin{gather*}
+  0 1 0 0 0 1 0 0 1 1 0 1 0 1 1 1 1 1 1 1 0 
+  1 0 0 1 1 0 0 1 0 0 1 0 0 0 1 0 1 0 1 0 0
+  0 1 0 1 1 1 1 0
+\end{gather*} 
+To resample the data, the nonparametric bootstrap was used and the song was resampled 100 times. The runs test was then performed on the distances of misses in the bootstrapped sample. This returned the average of the p-values that were less that 0.05 for each theoretical alpha, this can be seen in the table below.
+\begin{table}[t]
+\begin{center}
+\begin{tabular}{|c|c|}
+\textbf{Type 1 Error} & \textbf{Random Song 1}\\
+$\alpha = 0.001$ & 0.00\\
+$\alpha = 0.005$ &  0.00\\
+$\alpha = 0.006$ &  0.00\\
+$\alpha = 0.007$ & 0.00\\
+$\alpha = 0.008$ & 0.02\\
+$\alpha = 0.009$ & 0.02\\
+$\alpha = 0.01$ & 0.02\\
+$\alpha = 0.02$ & 0.03\\
+$\alpha = 0.03$ & 0.03\\
+$\alpha = 0.04$ & 0.05\\
+$\alpha = 0.05$ &  0.05\\
+$\alpha = 0.06$ &  0.05\\
+$\alpha = 0.07$ &  0.05\\
+$\alpha = 0.08$ &  0.06\\
+$\alpha = 0.09$ & 0.07\\
+$\alpha = 0.1$ & 0.08 \\ 
+\end{tabular}
+\end{center}
+\caption{A function was created to loop through p-values from 0.001 to 0.1 that incremented by 0.005, in order to  generate the Type 1 Error Rates. The table above shows the rates obtained with their respective alpha.}
+\label{fig: Type 1 Error Rates for Nonparametric Bootstrap}
+\end{table}
+The empirical alpha seems to very roughly, match the theoretical alphas. Although, the empirical alphas were not increasing consistently. They would get stuck at certain alphas such as 0.02 and 0.05. Therefore, the theoretical alphas are increasing at a faster rate than the empirical alphas are.
+\subsubsection{Final Power Simulations}
+For the final power simulations, 
+\begin{table}[t]
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{Type 1 Error Rate Scenario} & $\alpha = 0.001$ &  $\alpha = 0.005$ &  $\alpha = 0.01$ &  $\alpha = 0.05$ &  $\alpha = 0.10$ \\
+\hline
+Neg. Pair Correlation, n = 200 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+Neg. Pair Correlation, n = 600 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+Blocks, n = 200 & 0.00 & 0.04 & 0.04 & 0.04 & 0.04 \\
+\hline
+Blocks, n = 600 & 0.00 & 0.01 & 0.01 & 0.01 & 0.01 \\
+\hline
+AR(1), p=0.1, $\rho = 0.5$, n = 200 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+AR(1), p=0.1, $\rho = 0.5$, n = 600 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+AR(1), p=0.1, $\rho = 0.3$, n = 200 & 0.00 & 0.00 & 0.00 & 0.01 & 0.01 \\
+\hline
+AR(1), p=0.1, $\rho = 0.3$, n = 600 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+AR(1), p=0.2, $\rho = 0.5$, n = 200 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+AR(1), p=0.2, $\rho = 0.5$, n = 600 & 0.00 & 0.01 & 0.01 & 0.01 & 0.01 \\
+\hline
+\end{tabular}
+\end{center}
+\caption{The table shows the power at each theoretical alpha for each of the scenarios above.}
+\label{fig: Power Simulations using Nonparametric Bootstrap}
+\end{table}
 
 \section{APPLICATION}
+To obtain a p-value for each song, 100 bootstraps were performed to change the 0's and 1's to different orders and sequences.  Previously, 1000 bootstraps were being done, but it was taking a significant amount of time to return a p-value.  The null hypothesis being followed is that the songs are random and the alternative hypothesis is that the songs are not random. A significance level of $\alpha = 0.05 is being used. The results we have here are based solely off of the p-values obtained from these results. Confidence intervals would be a way to improve the strength of these results, which is discussed more in the Future Research sectionof this paper.
+
+\subsection{Song 1: "Judith"}
+
+\subsubsection{Parametric Bootstrap}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0 \\
+\hline
+Runs Test & 0.512 \\ 
+\hline
+\end{tabular}
+
+
+\subsubsection{Permutation Resampling}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0 \\
+\hline
+Runs Test & 0.847 \\ 
+\hline
+\end{tabular}
+
+Using just these p-values, we would reject the null hypothesis of randomness using Method 1, however fail to reject the null hypothesis when using the runs test on the distances. This implies that we may come to two different conclusions about the randomness of the songs depending on which method we are using. 
+
+\subsubsection{Regular Bootstrap}
+
+\subsection{Song 2: "Hurts"}
+
+\subsubsection{Parametric Bootstrap}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0  \\
+\hline
+Runs Test & 0.512 \\ 
+\hline
+\end{tabular}
+
+
+\subsubsection{Permutation Resampling}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0  \\
+\hline
+Runs Test & 0.249 \\ 
+\hline
+\end{tabular}
+
+According to the p-value of the Method 1 test, the null hypothesis would be rejected, meaning there is enough evidence to say that the songs are not random. However, according to the p-value obtained from the Runs Test, we would fail to reject the null hypothesis of randomness. Similarly to the test done on the song "Judith" with permutation resampling, these are contrasting results.
+
+\subsubsection{Nonparametric Bootstrap}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0.186  \\
+\hline
+Runs Test & 0.459 \\ 
+\hline
+\end{tabular}
+
+\subsection{Song 3: "American Girl"}
+\subsubsection{Parametric Bootstrap}
+
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0.16 \\
+\hline
+Runs Test & 0.211 \\ 
+\hline 
+\end{tabular}
+
+\subsubsection{Permutation Resampling}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0  \\
+\hline
+Runs Test & 0.414 \\ 
+\hline
+\end{tabular}
+
+These p-values alone give us contrasting results once again. The Method 1 test p-value implies that the null hypothesis of randomness would be rejected, while the Runs Test p-value says that we should fail to reject the null hypothesis. 
+
+\subsubsection{Nonparametric Bootstrap}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0  \\
+\hline
+Runs Test & 0.841 \\ 
+\hline
+\end{tabular}
+
+\subsection{Song 4: "Funky"}
+\subsubsection{Parametric Bootstrap}
+
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0 \\
+\hline
+Runs Test & 0.08  \\ 
+\hline
+\end{tabular}
+
+\subsubsection{Permutation Tests}
+
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0 \\
+\hline
+Runs Test & 0.442  \\ 
+\hline
+\end{tabular}
+
+These p-values are very similar to those of the tests on "American Girl" using permutation resampling. Rejecting the null hypothesis for the Method 1 test and failing to reject the null hypothesis for the Runs test leaves us with conflicting results since both tests have a null hypothesis of randomness. 
+
+\subsubsection{Nonparametric Bootstrap}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0  \\
+\hline
+Runs Test & 0.656 \\ 
+\hline
+\end{tabular}
+
+\subsection{Song 5: "Ring of Fire"}
+\subsubsection{Parametric Bootstrap}
+
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value  \\
+\hline
+Method 1 & 2.204 $[e^{-16}]$ \\
+\hline
+Runs Test & 0.44 \\ 
+\hline
+\end{tabular}
+
+\subsubsection{Permutation Tests}
+
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value  \\
+\hline
+Method 1 & 2.204 $[e^{-16}]$ \\
+\hline
+Runs Test & 0.614 \\ 
+\hline
+\end{tabular}
+
+Similarly to the other results of the hypothesis tests with permutation resampling, we have differing results here. The p-value of the Method 1 test tells us to reject the null hypothesis while the Run tests p-value tells us to fail to reject the null hypothesis.
+
+\subsubsection{Nonparametric Bootstrap}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0  \\
+\hline
+Runs Test & 0.317 \\ 
+\hline
+\end{tabular}
+
+\subsection{Song 6: "Watchtower"}
+\subsubsection{Parametric Bootstrap}
+
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value  \\
+\hline
+Method 1 & 2.204 $[e^{-16}]$ \\
+\hline
+Runs Test & 0.66 \\ 
+\hline
+\end{tabular}
+
+\subsubsection{Permutation Tests}
+
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value  \\
+\hline
+Method 1 & 2.204 $[e^{-16}]$ \\
+\hline
+Runs Test & 0.577 \\ 
+\hline
+\end{tabular}
+
+Here, the Method 1 test says to reject the null hypothesis of randomness and the Runs test says to fail to reject the null hypothesis.
+
+\subsubsection{Nonparametric Bootstrap}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0  \\
+\hline
+Runs Test & 0.727 \\ 
+\hline
+\end{tabular}
+
+\subsection{Song 7: "Wolf"}
+\subsubsection{Parametric Bootstrap}
+
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value  \\
+\hline
+Method 1 & 2.204 $[e^{-16}]$ \\
+\hline
+Runs Test & 0.58 \\ 
+\hline
+\end{tabular}
+
+\subsubsection{Permutation Tests}
+
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value  \\
+\hline
+Method 1 & 0.06 \\
+\hline
+Runs Test & 0.265 \\ 
+\hline
+\end{tabular}
+
+Similar to all of the other results in this section for permutation resampling, these p-values are telling us to do two different things. The p-value of the Method 1 test is telling us to reject the null hypothesis while the p-value of the Runs test is telling us to fail to rejcet the null hypothesis. Since these results are all differing, we cannot make a definite conclusion on whether there is enough evidence to conclude that these songs are random.
+
+\subsubsection{Nonparametric Bootstrap}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0.02  \\
+\hline
+Runs Test & 0.727 \\ 
+\hline
+\end{tabular}
+
 
 
 \section{DISCUSSION/LIMITATIONS/IDEAS FOR FURTHER RESEARCH}
+\subsection{Discussion}
 
+\subsections{Limitations}
+One of the main limitations that we ran into durig this research was the extent of what we could find out about the runs test. Since the runs test that was implemented was taken from an Rstudio package, it did not give all of the information desired about the runs test statistic, how the number of runs was calculated, and more. Though we were able to figure most of these things out, we could not derive exactly how the runs test statistic was calculated since there are different methods to compute this, depending on which form of the runs test being used. Knowing how this test statistic is computed and being able to view this in addition ot the p-value of the test would give more flexibility in what we could do with our results.
+
+\subsection{Ideas for Future Research}
+To continue this research, some additional things can be done. Looking into splitting the song into sections before using these tests could help determine randomness in a different way. This may also give more information on how the level of difficulty varies throughout the song, since it would be visible which specific parts of the song are random and which are not. Multiple plays of the same song may also help since there would be more data to work with and comparisons could be made between the resamplings of the different plays.
+In addition, a new method to look into would be the Serial Method.
 
 \section{APPENDIX}
 
