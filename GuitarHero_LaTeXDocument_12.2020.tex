@@ -96,12 +96,118 @@ AR(1), p=0.2, $\rho = 0.5$, n = 600 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
 
 
 \section{APPLICATION}
+To obtain a p-value for each song, 100 bootstraps were performed to change the 0's and 1's to different orders and sequences.  Previously, 1000 bootstraps were being done, but it was taking a significant amount of time to return a p-value.  The null hypothesis being followed is that the songs are random and the alternative hypothesis is that the songs are not random. 
+
+\subsection{Song 1: "Judith"}
+
+\subsubsection{Parametric Bootstrap}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0 \\
+\hline
+Runs Test & 0.512 \\ 
+\hline
+\end{tabular}
+
+
+\subsubsection{Permutation Tests}
+\subsubsection{Regular Bootstrap}
+
+\subsection{Song 2: "Hurts"}
+
+\subsubsection{Parametric Bootstrap}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0  \\
+\hline
+Runs Test & 0.512 \\ 
+\hline
+\end{tabular}
+
+\subsection{Song 3: "American Girl"}
+\subsubsection{Parametric Bootstrap}
+
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0.16 \\
+\hline
+Runs Test & 0.211 \\ 
+\hline 
+\end{tabular}
+
+\subsection{Song 4: "Funky"}
+\subsubsection{Parametric Bootstrap}
+
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0 \\
+\hline
+Runs Test & 0.08  \\ 
+\hline
+\end{tabular}
+
+\subsection{Song 5: "Ring of Fire"}
+\subsubsection{Parametric Bootstrap}
+
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value  \\
+\hline
+Method 1 & 2.204 $[e^{-16}]$ \\
+\hline
+Runs Test & 0.44 \\ 
+\hline
+\end{tabular}
+
+\subsection{Song 6: "Watchtower"}
+\subsubsection{Parametric Bootstrap}
+
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value  \\
+\hline
+Method 1 & 2.204 $[e^{-16}]$ \\
+\hline
+Runs Test & 0.66 \\ 
+\hline
+\end{tabular}
+\subsection{Song 7: "Wolf"}
+\subsubsection{Parametric Bootstrap}
+
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value  \\
+\hline
+Method 1 & 2.204 $[e^{-16}]$ \\
+\hline
+Runs Test & 0.58 \\ 
+\hline
+\end{tabular}
 
 
 \section{DISCUSSION/LIMITATIONS/IDEAS FOR FURTHER RESEARCH}
 
 
 \section{APPENDIX}
+\begin{figure}
+\centering
+\includegraphics[width=7cm]{Pari Correlation.pdf}
+\caption{Pairwise Correlation}
+\label{fig: Pair Correlation Plot}
+\end{figure}
+
+\section{PERSONAL REFLECTIONS}
+\subsection{Brianna Cirillo}
+\subsection{Samantha Colucci}
+\subsection{Shannon Coyle}
 
 
 \end{document}
