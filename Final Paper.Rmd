@@ -492,7 +492,6 @@ Runs Test & 0.727 \\
 \end{tabular}
 
 
-
 \section{DISCUSSION/LIMITATIONS/IDEAS FOR FURTHER RESEARCH}
 \subsection{Discussion}
 
@@ -504,6 +503,60 @@ To continue this research, some additional things can be done. Looking into spli
 In addition, a new method to look into would be the Serial Method.
 
 \section{APPENDIX}
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=10cm]{ParametricBootstrapCode.png}
+\caption{Code to perform a Parametric Resampling on the data given}
+\label{fig: Parametric Bootstrap Code}
+\end{figure}
 
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=10cm]{PermutationResamplingCode.png}
+\caption{Code to perform Permutation Resampling on a vector of a song}
+\label{fig: Permutation Resampling Code}
+\end{figure}
+
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=10cm]{DistancesCode.png}
+\caption{Code to compute the distances on a given vector of a song}
+\label{fig: Distances Code}
+\end{figure}
+
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=10cm]{DistanceCodeforSamples.png}
+\caption{Code to compute the distances on a given matrix of songs (all samples)}
+\label{fig: Distances Code for Samples}
+\end{figure}
+
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=10cm]{RunsTestforSamples.png}
+\caption{Code to compute the runs test on all samples}
+\label{fig: Runs Test Code for Samples}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=10cm]{Type1ErrCode.png}
+\caption{Code to get the Type 1 error of the inputted song}
+\label{fig: Type 1 Error Code}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=10cm]{FindNonRandomCode.png}
+\caption{Code finds the songs that are not random within the matrix}
+\label{fig: Find Nonrandom Songs Code}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=10cm]{PowerCode.png}
+\caption{Calculates the power of the test being performed on the song}
+\label{fig: Power Code}
+\end{figure}
 
 \end{document}
