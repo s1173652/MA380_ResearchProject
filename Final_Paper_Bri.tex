@@ -102,7 +102,7 @@ By taking 50 samples from the binomial distribution, the resulting random song w
   0 1 0 1 1 1 1 0
 \end{gather*} 
 To reample the data, the nonparametric bootstrap was used and the song was resampled 100 times. The runs test was then performed on the distances of misses in the bootstrapped sample. This returned the average of the p-values that were less that 0.05 for each theoretical alpha, whis can be seen in the table below.
-\begin{table}[t]
+\begin{table}[h]
 \begin{center}
 \begin{tabular}{|c|c|}
 \textbf{Type 1 Error} & \textbf{Random Song 1}\\
@@ -128,9 +128,10 @@ $\alpha = 0.1$ & 0.08 \\
 \label{fig: Type 1 Error Rates for Nonparametric Bootstrap}
 \end{table}
 The empirical alpha seems to very roughly, match the theoretical alphas. Although, the empirical alphas were not increasing consistently. They would get stuck at certain alphas such as 0.02 and 0.05. Therefore, the theoretical alphas are increasing at a faster rate than the empirical alphas are.
+
 \subsubsection{Final Power Simulations}
-For the final power simulations, 
-\begin{table}[t]
+For the final power simulations, the majority of the scenarios gave a power of 0. This is extremely low, but overall pretty consistent with our previous findings. The blocks scenario, when the song had 200 notes, gave errors of 0.04 for alphas equal to 0.005, 0.01, 0.05, and 0.10. When the song had 600 notes, the error rates were 0.01 for alphas equal to 0.005, 0.01, 0.05, and 0.10. This potentially means that the runs test on the distance of misses detected nonrandomness more in the block scenarios. In the autocorrelation scenario with 200 notes, where the probability of missing a note was 0.1, and the correlation between any two notes was $0.3^{\mid i-j \mid}$, when alpha was 0.05 and 0.10, the error was 0.01. This could mean that when alpha is 0.05 and 0.10 in this scenario of autocorrelation, that nonrandomness was detected more. In the autocorrelation scenario with 600 notes, where the probability of missing a note was 0.2, and the correlation between any two notes was $0.5^{\mid i-j \mid}$, when alpha was 0.005, 0.01, 0.05, and 0.10 the error was 0.01. Therefore, the detection of nonrandomness was higher in this scenario. This is shown in the table below.
+\begin{table}[h]
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
@@ -163,6 +164,7 @@ AR(1), p=0.2, $\rho = 0.5$, n = 600 & 0.00 & 0.01 & 0.01 & 0.01 & 0.01 \\
 \end{table}
 
 \section{APPLICATION}
+The hits and misses data was collected on seven songs: "Judith", "Hurts", "American Girl", "Funky", "Ring of Fire", "Watchtower", and "Wolf". For each of these songs, the methods explained above were used to determine if the hits and misses were random. Since method 2 calculates the distances between misses, which was used for the run's test calculations, method 2 was not tested on its own. Therefore, method 1 and the run's test on the distances between misses were calculated for each song using the three different resampling methods.
 \subsection{Song 1: "Judith"}
 
 \subsubsection{Parametric Bootstrap}
@@ -178,7 +180,11 @@ Runs Test & 0.512 \\
 
 
 \subsubsection{Permutation Tests}
-\subsubsection{Regular Bootstrap}
+
+\subsubsection{Nonparametric Bootstrap}
+The nonparametric bootstrap was used to resample the song "Judith", in order to test for randomness using method 1 and the run's test.  Using method 1, the proportion of the number of miss streaks over the number of total misses, resulted in a p-value of 0. The null hypothesis for method 1 is randomness, thus we would reject the null at the level 0.05. Therefore, we  cannot conclude that the song, "Judith" is random. 
+
+
 \begin{tabular}{|c|c|c|}
 \hline
 \textbf{Method Type} & P-Value \\
