@@ -29,42 +29,77 @@ There was an attempt to use a median distance as a basis rather than the mean be
 \subsection{Runs Test}
 Knowing that the runs test is a preconceived test for randomness, the idea behind using this was to use it on the distances of misses within a song, rather than just using it on the song. As mentioned previously if a conclusion can be reached that the distances are random, this would imply randomness of the misses in the song. 
 
-A run is defined as a series of increasing or decreasing values, while the number of values in each series is the length of each run. The number of runs in a data set is crucial because this is the number that is used to derive the test statistic. The other values involved in deriving the test statistics is the exected number of runs, the median value of the data sample, and the number of values below and above the median.
+A run is defined as a series of increasing or decreasing values, while the number of values in each series is the length of each run. The number of runs in a data set, denoted R, is crucial because this is the number that is used to derive the test statistic. The other values involved in deriving the test statistics is the expected number of runs, denoted $\overline{R}$, the median value of the data sample, the standard deviation of the number of runs, and the number of values below and above the median. 
+
+Once the test statistic is derived, the runs test comes to a conclusion about whether or not to reject the null hypothesis. Here, the test defines: 
+
+
+The runs test program used was found from the snpar package in RStudio. A p-value, the number of runs and an alternative hypothesis of nonrandomness is produced once the test is run. This package was specifically chosen because was created to be used on discrete data, rather than continuous. When using this method, each song was resampled and a distance vector for each sample was computed. The runs test was then used on the distances to determine if the null hypothesis of randomness should be rejected or not. 
 
 \subsection{Resampling Methods}
 \subsubsection{Parametric Bootstrap}
 The Parametric Bootstrap was used to generate a bootstrap using a parameterized distribution.  It takes in a specified number of resamples then performs a Bernoulli distribution in order to resample the data.  The Bernoulli distribution looks at the sample size then the event probability, which was set to 50\% since the data is composed of 0's and 1's.  This goes through and resamples the data as either a 0 or a 1 for the specified number of resamples that was initialized.   
 
-\subsubsection{Permutation Tests}
+\subsubsection{Permutation Resampling}
+The permutation resampling method is a type of randomization that was developed for data that does not conform to the assumptions needed to perform the statistical method desired. There are multiple advantages to using this type of resampling. In order to implement this, one does not need to know the distribution of the data and it can also be used on small sample sizes. A major disadvantage to using this method is the amount of computer power it takes, since as the sample size begins to increase, the number of permutations computed during the resampling increases rapidly. For this reason, when the permutation resampling is used throughout Methods 1, 2 and the Runs test, the amount of samples produced by this resampling is smaller than that produced by the other resampling techniques.
+
+The main element of this resampling method, that differentiates it from most other methods, is that it resamples *without* replacement. Essentially, it redistributes the original elements of the data in a different order. Though this sampling can be beneficial to use here since the distribution of our data is unknown, it also presents issues when checking for randomness. For example, if there is a detectable pattern in a specific song or sample, the permutation resampling may cause the presence of that pattern to disappear, due to the way the resampling is done. When this became an issue during the research, a different approach was taken to ensure that if the songs being analyzed do have a pattern, that pattern is not lost. This is discussed more in the Power of the Test section. 
+
 \subsubsection{Regular Bootstrap}
 
 
 \section{EMPIRICAL TYPE 1 ERROR AND POWER SIMULATIONS}
+The empirical type 1 error rate looks at the error caused by rejecting a null hypothesis which is true.  In this case, it would reject the song being random when it actually is and accept that the song is non-random.  To perform this, a random song of 0s and 1s is generated based on the number of notes given.  It then performs one of the three resampling methods on the randomly generated song.  It then calculates the distances between misses and the runs test is performed on the distances for each row to return a p-value.
 
 \subsection{Parametric Bootstrap}
-\subsubsection{Empirical Type 1 Error} 
+When resampling with a parametric bootstrap, multiple simulations were run with a varying number of observations - it was usually 50 or 100 observations.  
 
-\begin{tabular}{|c|c|}
-\textbf{Type 1 Error} & \textbf{Random Song 1}\\
-$\alpha = 0.001$ & 0.00\\
-$\alpha = 0.005$ &  0.01\\
-$\alpha = 0.006$ &  0.01\\
-$\alpha = 0.007$ & 0.01\\
-$\alpha = 0.008$ & 0.01\\
-$\alpha = 0.009$ & 0.01\\
-$\alpha = 0.01$ & 0.01\\
-$\alpha = 0.02$ & 0.01\\
-$\alpha = 0.03$ & 0.01\\
-$\alpha = 0.04$ & 0.01\\
-$\alpha = 0.05$ &  0.03\\
-$\alpha = 0.06$ &  0.06\\
-$\alpha = 0.07$ &  0.08\\
-$\alpha = 0.08$ &  0.08\\
-$\alpha = 0.09$ & 0.08\\
-$\alpha = 0.1$ & 0.08 \\
-\end{tabular}
+\subsubsection{Empirical Type 1 Error} 
+To calculate the empirical type 1 error rate, the parametric bootstrap worked better with 50 observations as opposed to 100 observations.  There were also two random songs made to see how the error rate varies between songs.  These random songs were generated through code in which they were both 50 notes long and had a 50\% chance of being a 0 or a 1.  Alpha was increased by 0.01, but error rates between 0.005 and 0.001 ended up being 0.00. 
+
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Alpha} & \textbf{Empirical - Random Song 1} & \textbf{Empirical - Random Song 2} \\
+\hline
+$\alpha = 0.001$ & 0.00 & 0.00\\
+$\alpha = 0.005$ &  0.01 & 0.00\\
+$\alpha = 0.006$ &  0.01 & 0.02\\
+$\alpha = 0.007$ & 0.01 & 0.02\\
+$\alpha = 0.008$ & 0.01 & 0.04\\
+$\alpha = 0.009$ & 0.01 & 0.04\\
+$\alpha = 0.01$ & 0.01 & 0.04\\
+$\alpha = 0.02$ & 0.01 & 0.04\\
+$\alpha = 0.03$ & 0.01 & 0.06\\
+$\alpha = 0.04$ & 0.01 & 0.06\\
+$\alpha = 0.05$ &  0.03 & 0.07\\
+$\alpha = 0.06$ &  0.06 & 0.08\\
+$\alpha = 0.07$ &  0.08 & 0.09\\
+$\alpha = 0.08$ &  0.08 & 0.13\\
+$\alpha = 0.09$ & 0.08 & 0.13\\
+$\alpha = 0.1$ & 0.08 & 0.14\\
+\hline
+\end{tabular} \\
+
+The table above shows the difference between the two random songs and how the second random song displayed more of a variation of error values.  The second random song showed to have more of a curve and varying error rates, whereas, the first random song had multiple occurrences of the same p-value for different alphas. 
+
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=10cm]{Type1_Song1.png}
+\caption{Graph of Type 1 error rates for Random Song 1 with 50 observations}
+\label{fig: Type 1 Error, Song 1, n=50}
+\end{figure}
+
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=10cm]{Type1_Song2.png}
+\caption{Graph of Type 1 error rates for Random Song 2 with 50 observations}
+\label{fig: Type 1 Error, Song 2, n=50}
+\end{figure}
+
 
 \subsubsection{Final Power Simulations}
+When using the Parametric Bootstrap to return a power, they were generally very low p-values or 0.  The power was always equal to 0 when alpha was set to 0.001 and many of the scenarios gave 0 for every value of alpha.  There were three scenarios that gave actual values which were the both blocks methods and the autoregressive model of order 1 that had 200 notes per song, a probability of missing a note as p=0.1, and $\rho = 0.3$. \\
+
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
 \textbf{Type 1 Error Rate Scenario} & $\alpha = 0.001$ &  $\alpha = 0.005$ &  $\alpha = 0.01$ &  $\alpha = 0.05$ &  $\alpha = 0.10$ \\
@@ -89,7 +124,24 @@ AR(1), p=0.2, $\rho = 0.5$, n = 200 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
 \hline
 AR(1), p=0.2, $\rho = 0.5$, n = 600 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
 \hline
-\end{tabular}
+\end{tabular} \\
+
+From the table, it is evident that most of the values obtained are 0 with exceptions for three of the scenarios.  Aside from the table, the graphs also show the large number of occurrences of 0 as a power.  \\
+
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=10cm]{PowerGraphs1.png}
+\caption{Graph of first four scenarios to calculate the power of a test}
+\label{fig: Power Graphs 1}
+\end{figure}
+
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=10cm]{PowerGraphs2.png}
+\caption{Graph of last four scenarios to calculate the power of a test}
+\label{fig: Power Graphs 2}
+\end{figure}
+
 
 \subsection{Permutation Test}
 \subsection{Regular Bootstrap}
@@ -195,14 +247,36 @@ Runs Test & 0.58 \\
 
 \section{DISCUSSION/LIMITATIONS/IDEAS FOR FURTHER RESEARCH}
 
-
 \section{APPENDIX}
+
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=10cm]{ParametricBootstrapCode.png}
+\caption{Code to perform a Parametric Resampling on the data given}
+\label{fig: Parametric Bootstrap Code}
+\end{figure}
+
 \begin{figure}
 \centering
-\includegraphics[width=7cm]{Pari Correlation.pdf}
-\caption{Pairwise Correlation}
-\label{fig: Pair Correlation Plot}
+\includegraphics[width=10cm]{Type1ErrCode.png}
+\caption{Code to get the Type 1 error of the inputted song}
+\label{fig: Type 1 Error Code}
 \end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=10cm]{FindNonRandomCode.png}
+\caption{Code finds the songs that are not random within the matrix}
+\label{fig: Find Nonrandom Songs Code}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=10cm]{PowerCode.png}
+\caption{Calculates the power of the test being performed on the song}
+\label{fig: Power Code}
+\end{figure}
+
 
 \section{PERSONAL REFLECTIONS}
 \subsection{Brianna Cirillo}
