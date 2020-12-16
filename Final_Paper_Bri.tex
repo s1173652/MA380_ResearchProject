@@ -1,0 +1,308 @@
+\documentclass[12pt, letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{placeins}
+\makeatletter
+\AtBeginDocument{%
+  \expandafter\renewcommand\expandafter\subsection\expandafter
+    {\expandafter\@fb@secFB\subsection}%
+  \newcommand\@fb@secFB{\FloatBarrier
+    \gdef\@fb@afterHHook{\@fb@topbarrier \gdef\@fb@afterHHook{}}}%
+  \g@addto@macro\@afterheading{\@fb@afterHHook}%
+  \gdef\@fb@afterHHook{}%
+}
+\makeatother
+\makeatletter
+\AtBeginDocument{%
+  \expandafter\renewcommand\expandafter\subsection\expandafter{%
+    \expandafter\@fb@secFB\subsection
+  }%
+}
+\makeatother
+
+\title{Creating a Test Statistic to Find if the Number of Misses in a Song from Guitar Hero is Random}
+\author{Shannon Coyle, Samantha Colucci, and Brianna Cirillo}
+\date{December 2020}
+
+\begin{document}
+\maketitle
+
+\section{INTRODUCTION}
+The game, Guitar Hero, collects information regarding the number of “hits” recorded by the player.  This poses the question about the randomness of the misses in a song and if they are correlated to the difficulty of the part of the song.
+
+The study investigates the randomness of different songs using varying methods.  These methods looked at the number of miss streaks over the total number of misses, distances between each miss, and using the runs test.  The resampling of the data sets was performed through parametric bootstrapping, permutation tests, and regular bootstrapping. Using resampling and our methods together allowed us to assess the randomness of a given song based on the results. 
+
+This report explains the methodology used in order to test the randomness of a song. The methods and resampling used throughout the project gave results for the empirical type 1 error and the power of the test. These methods were applied to different songs, therefore, returning different results. This report will also look at the limitations and future ideas for the project, and how some of our methods worked well while others did not.
+
+\section{METHODOLOGY}
+\subsection{Method 1}
+The first method looks at the proportion of the number of miss streaks over the number of total misses.  A streak was defined as one or more misses in a row since it was easier with the code and some samples did not have that many streaks to look at.  From this method, we discovered that the proportion does not tell us anything about the location of the misses.  This proved to be difficult to determine randomness of misses without knowing the exact location of them.  
+
+\subsection{Method 2}
+The second method calculates the distances between misses in a song.  The idea behind this method was that if we can see where the misses are occurring, we can see if they are random.  We can seeing where the distances are occurring randomly and conclude that the misses must also be occurring randomly. 
+
+There was an attempt to use a median distance as a basis rather than the mean because the distances were varied, so the average would not tell us that much.  This led to a problem because a lot of the songs had long miss streaks, which lead to a distance of 0, so the median would also become zero.  With this small issue, it led to the idea of use the runs test on this method and, therefore, the distances.  
+
+\subsection{Runs Test}
+Knowing that the runs test is a preconceived test for randomness, the idea behind using this was to use it on the distances of misses within a song, rather than just using it on the song. As mentioned previously if a conclusion can be reached that the distances are random, this would imply randomness of the misses in the song. 
+
+A run is defined as a series of increasing or decreasing values, while the number of values in each series is the length of each run. The number of runs in a data set is crucial because this is the number that is used to derive the test statistic. The other values involved in deriving the test statistics is the expected number of runs, the median value of the data sample, and the number of values below and above the median.
+
+\subsection{Resampling Methods}
+\subsubsection{Parametric Bootstrap}
+The Parametric Bootstrap was used to generate a bootstrap using a parameterized distribution.  It takes in a specified number of resamples then performs a Bernoulli distribution in order to resample the data.  The Bernoulli distribution looks at the sample size then the event probability, which was set to 50\% since the data is composed of 0's and 1's.  This goes through and resamples the data as either a 0 or a 1 for the specified number of resamples that was initialized.   
+
+\subsubsection{Permutation Tests}
+\subsubsection{Nonparametric Bootstrap}
+Nonparametric bootstrapping is taking a sample of the same size as the data, from the data, but with replacement. This means that even if a data point is resampled, it can be resampled again. The goal of bootstrapping is to approximate the sampling distribution by simulating the data, then using this resamples data as the real data. This allows for data analysis on data that we are not willing to make assumptions about the parameters. On average, the number of times data was bootstrapped was between 200 and 5000 times. 
+
+
+\section{EMPIRICAL TYPE 1 ERROR AND POWER SIMULATIONS}
+To look into the empirical type 1 error rates, random songs were created. In order to create the songs,a sample of 50 observations were taken from a binomial distribution with a probability of 0.5. The songs were resampled using each of the aforementioned methods. The distances of misses in the resampled sample, were then calculated. The runs test was then performed on these distances for each alpha from 0.001 to 0.1 that were incremented at 0.005. This therefore returned the average of the p-values that were less that 0.05 for each theoretical alpha. 
+
+For the final power simulations, different scenarios were used in order to create a song that is not random. This means that the songs created should make the null hypothesis false. Doing this will show how well the metrics identify nonrandomness.The scenarios using positive pairwise correlation generated two songs, one with 200 notes and one with 600 notes. The probability model used was that the probability of missing a note was 0.2 and the correlation between any two consecutive notes was 0.3.The scenarios using blocks with different difficulties also created two songs, one with 200 notes and one with 600 notes. For each song created using this scenario, there were easy, medium, hard, and very hard sections. The probability of missing a note in an easy section is 0.01, in a medium section is 0.05, in a hard section 0.25, and in a very hard section is 0.5. The scenarios using the autoregressive model of order 1 generated six songs, three with 200 notes and three with 600 notes. The probability model used for the first type is the probability of missing a note is 0.1 and the correlation between any two notes is $0.5^{\mid i-j \mid}$. For the probability model for the second type, the probability of missing a note stayed 0.1, but the correlation between any two notes is $0.3^{\mid i-j \mid}$. For the third type, the probability of missing a note is 0.2 and the correlation between any two notes is $0.5^{\mid i-j \mid}$.
+
+\subsection{Nonparametric Bootstrap}
+
+\subsubsection{Empirical Type 1 Error} 
+By taking 50 samples from the binomial distribution, the resulting random song was:
+\begin{gather*}
+  0 1 0 0 0 1 0 0 1 1 0 1 0 1 1 1 1 1 1 1 0 
+  1 0 0 1 1 0 0 1 0 0 1 0 0 0 1 0 1 0 1 0 0
+  0 1 0 1 1 1 1 0
+\end{gather*} 
+To resample the data, the nonparametric bootstrap was used and the song was resampled 100 times. The runs test was then performed on the distances of misses in the bootstrapped sample. This returned the average of the p-values that were less that 0.05 for each theoretical alpha, which can be seen in the table below.
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c|}
+\textbf{Type 1 Error} & \textbf{Random Song 1}\\
+$\alpha = 0.001$ & 0.00\\
+$\alpha = 0.005$ &  0.00\\
+$\alpha = 0.006$ &  0.00\\
+$\alpha = 0.007$ & 0.00\\
+$\alpha = 0.008$ & 0.02\\
+$\alpha = 0.009$ & 0.02\\
+$\alpha = 0.01$ & 0.02\\
+$\alpha = 0.02$ & 0.03\\
+$\alpha = 0.03$ & 0.03\\
+$\alpha = 0.04$ & 0.05\\
+$\alpha = 0.05$ &  0.05\\
+$\alpha = 0.06$ &  0.05\\
+$\alpha = 0.07$ &  0.05\\
+$\alpha = 0.08$ &  0.06\\
+$\alpha = 0.09$ & 0.07\\
+$\alpha = 0.1$ & 0.08 \\ 
+\end{tabular}
+\end{center}
+\caption{A function was created to loop through p-values from 0.001 to 0.1 that incremented by 0.005, in order to  generate the Type 1 Error Rates. The table above shows the rates obtained with their respective alpha.}
+\label{fig: Type 1 Error Rates for Nonparametric Bootstrap}
+\end{table}
+The empirical alpha seems to very roughly, match the theoretical alphas. Although, the empirical alphas were not increasing consistently. They would get stuck at certain alphas such as 0.02 and 0.05. Therefore, the theoretical alphas are increasing at a faster rate than the empirical alphas are.
+
+\subsubsection{Final Power Simulations}
+For the final power simulations, the majority of the scenarios gave a power of 0. This is extremely low, but overall pretty consistent with our previous findings. The blocks scenario, when the song had 200 notes, gave errors of 0.04 for alphas equal to 0.005, 0.01, 0.05, and 0.10. When the song had 600 notes, the error rates were 0.01 for alphas equal to 0.005, 0.01, 0.05, and 0.10. This potentially means that the runs test on the distance of misses detected nonrandomness more in the block scenarios. In the autocorrelation scenario with 200 notes, where the probability of missing a note was 0.1, and the correlation between any two notes was $0.3^{\mid i-j \mid}$, when alpha was 0.05 and 0.10, the error was 0.01. This could mean that when alpha is 0.05 and 0.10 in this scenario of autocorrelation, that nonrandomness was detected more. In the autocorrelation scenario with 600 notes, where the probability of missing a note was 0.2, and the correlation between any two notes was $0.5^{\mid i-j \mid}$, when alpha was 0.005, 0.01, 0.05, and 0.10 the error was 0.01. Therefore, the detection of nonrandomness was higher in this scenario. This is shown in the table below.
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{Type 1 Error Rate Scenario} & $\alpha = 0.001$ &  $\alpha = 0.005$ &  $\alpha = 0.01$ &  $\alpha = 0.05$ &  $\alpha = 0.10$ \\
+\hline
+Neg. Pair Correlation, n = 200 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+Neg. Pair Correlation, n = 600 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+Blocks, n = 200 & 0.00 & 0.04 & 0.04 & 0.04 & 0.04 \\
+\hline
+Blocks, n = 600 & 0.00 & 0.01 & 0.01 & 0.01 & 0.01 \\
+\hline
+AR(1), p=0.1, $\rho = 0.5$, n = 200 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+AR(1), p=0.1, $\rho = 0.5$, n = 600 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+AR(1), p=0.1, $\rho = 0.3$, n = 200 & 0.00 & 0.00 & 0.00 & 0.01 & 0.01 \\
+\hline
+AR(1), p=0.1, $\rho = 0.3$, n = 600 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+AR(1), p=0.2, $\rho = 0.5$, n = 200 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+\hline
+AR(1), p=0.2, $\rho = 0.5$, n = 600 & 0.00 & 0.01 & 0.01 & 0.01 & 0.01 \\
+\hline
+\end{tabular}
+\end{center}
+\caption{The table shows the power at each theoretical alpha for each of the scenarios above.}
+\label{fig: Power Simulations using Nonparametric Bootstrap}
+\end{table}
+
+\section{APPLICATION}
+The hits and misses data was collected on seven songs: "Judith", "Hurts", "American Girl", "Funky", "Ring of Fire", "Watchtower", and "Wolf". For each of these songs, the methods explained above were used to determine if the hits and misses were random. Since method 2 calculates the distances between misses, which was used for the runs test calculations, method 2 was not tested on its own. Therefore, method 1 and the runs test on the distances between misses were calculated for each song using the three different resampling methods.
+\subsection{Song 1: "Judith"}
+
+\subsubsection{Nonparametric Bootstrap}
+The nonparametric bootstrap was used to resample the song "Judith", in order to test for randomness using method 1 and the runs test. The resulting p-values for each of the tests can be seen in table number. After the song bootstrapped 1000 times, the statistic for method 1 was calculated, the proportion of the number of miss streaks over the number of total misses. This resulted in a p-value of 0. The null hypothesis for method 1 is randomness, thus we would reject the null at the level 0.05. Therefore, we cannot conclude that the song, "Judith" is random. 
+
+To find the test statistic for the runs test, "Judith" was bootstrapped 100 times, the distances between misses was calculates, and the runs test was ran on the distances. This resulted in a p-value of 0.998. The null hypothesis of the runs test is that the data is normal. Since we fail to reject the null at the level 0.05, we do not have enough evidence to conclude that the data is not random.
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0 \\
+\hline
+Runs Test & 0.998 \\ 
+\hline
+\end{tabular}
+\end{center}
+\caption{The table shows the resulting p-values of the method 1 and runs test on the song, "Judith".}
+\label{fig: P-values for "Judith"}
+\end{table}
+
+\subsection{Song 2: "Hurts"}
+
+\subsubsection{Nonparametric Bootstrap}
+For the song, "Hurts", the nonparametric bootstrap was used to resample the song in order to test for randomness using method 1 and the runs test. The resulting p-values for each of the tests can be seen in table number. The song was bootstrapped 1000 times and the test statistic for method 1 was calculated. The resulting p-value was 0.186. Thus we would fail to reject the null at the level 0.05. Therefore, we can conclude that the song, "Hurts" is random. 
+
+For the runs test, "Hurts" was bootstrapped 100 times. The runs test was ran on the distances from the bootstrapped sample, which resulted in a p-value of 0.459. Therefore, we fail to reject the null at the level 0.05. We do not have enough evidence to conclude that the song, "Hurts", is not random.
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0.186  \\
+\hline
+Runs Test & 0.459 \\ 
+\hline
+\end{tabular}
+\end{center}
+\caption{The table shows the resulting p-values of the method 1 and runs test on the song, "Hurts".}
+\label{fig: P-values for "Hurts"}
+\end{table}
+
+\subsection{Song 3: "American Girl"}
+
+\subsubsection{Nonparametric Bootstrap}
+In order to test for randomness using method 1 and the runs test, "American Girl" was bootstrapped 1000 times. This resulted in p-values for each of the tests, which can be seen in table number. "American Girl" was bootstrapped 1000 times and the test statistic for method 1 was calculated. The resulting p-value was 0. Hence, we would reject the null at the level 0.05. Therefore, we cannot conclude that the song, "American Girl" is random. 
+
+"American Girl" was bootstrapped 100 times for the runs test. The bootstrapped sample was used to calculate the test statistic for the run's test, which resulted in a p-value of 0.841. Thus, we fail to reject the null at the level 0.05. We do not have enough evidence to conclude that the song, "American Girl", is not random.
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0  \\
+\hline
+Runs Test & 0.841 \\ 
+\hline
+\end{tabular}
+\end{center}
+\caption{The table shows the resulting p-values of the method 1 and runs test on the song, "American Girl".}
+\label{fig: P-values for "American Girl"}
+\end{table}
+
+\subsection{Song 4: "Funky"}
+
+\subsubsection{Nonparametric Bootstrap}
+The resulting in p-values for method 1 and the runs test, can be seen in table number. "Funky" was bootstrapped 1000 times and the test statistic for method 1 was calculated, for which the p-value was 0. Hence, we would reject the null at the level 0.05. Therefore, we cannot conclude that the song, "Funky" is random. 
+
+The test statistic for the runs test for "Funky" was calculated after the song was bootstrapped 100 times. The p-value of the test is 0.656. We fail to reject the null at the level 0.05. We do not have enough evidence to conclude that the song, "Funky", is not random.
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0  \\
+\hline
+Runs Test & 0.656 \\ 
+\hline
+\end{tabular}
+\end{center}
+\caption{The table shows the resulting p-values of the method 1 and runs test on the song, "Funky".}
+\label{fig: P-values for "Funky"}
+\end{table}
+
+\subsection{Song 5: "Ring of Fire"}
+
+\subsubsection{Nonparametric Bootstrap}
+The p-values for method 1 and the runs test, can be seen in table number. "Ring of Fire" was bootstrapped 1000 times and the test statistic for method 1 was calculated. The resulting p-value was approximately 0. We would reject the null at the level 0.05. Thus, we cannot conclude that the song, "Ring of Fire" is random. 
+
+"Ring of Fire" was bootstrapped 100 times and the test statistic for the runs test was calculated. The p-value of the test is 0.317. We fail to reject the null at the level 0.05. We do not have enough evidence to conclude that the song, "Ring of Fire", is not random.
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0  \\
+\hline
+Runs Test & 0.317 \\ 
+\hline
+\end{tabular}
+\end{center}
+\caption{The table shows the resulting p-values of the method 1 and runs test on the song, "Ring of Fire".}
+\label{fig: P-values for "Ring of Fire"}
+\end{table}
+
+\subsection{Song 6: "Watchtower"}
+
+\subsubsection{Nonparametric Bootstrap}
+The p-values for method 1 and the runs test, can be seen in table number. "Watchtower" was bootstrapped 1000 times and the test statistic for method 1 was calculated. The resulting p-value was approximately 0. We would reject the null at the level 0.05. Hence, we cannot conclude that the song, "Watchtower" is random. 
+
+The test statistic for the runs test was calculated after "Watchtower" was bootstrapped 100 times. The p-value of the test is 0.727. We fail to reject the null at the level 0.05. We do not have enough evidence to conclude that the song, "Watchtower", is not random.
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0  \\
+\hline
+Runs Test & 0.727 \\ 
+\hline
+\end{tabular}
+\end{center}
+\caption{The table shows the resulting p-values of the method 1 and runs test on the song, "Watchtower".}
+\label{fig: P-values for "Watchtower"}
+\end{table}
+
+\subsection{Song 7: "Wolf"}
+
+\subsubsection{Nonparametric Bootstrap}
+The p-values for method 1 and the runs test, can be seen in table number. The test statistic for method 1 was calculated after "Wolf" was bootstrapped 1000 times. The resulting p-value was 0.02. We would reject the null at the level 0.05. Hence, we cannot conclude that the song, "Wolf" is random. 
+
+The test statistic for the runs test was calculated after "Wolf" was bootstrapped 100 times. The p-value resulting from the test is 0.727. We fail to reject the null at the level 0.05. We do not have enough evidence to conclude that the song, "Wolf", is not random.
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method Type} & P-Value \\
+\hline
+Method 1 & 0.02  \\
+\hline
+Runs Test & 0.727 \\ 
+\hline
+\end{tabular}
+\end{center}
+\caption{The table shows the resulting p-values of the method 1 and runs test on the song, "Wolf".}
+\label{fig: P-values for "Wolf"}
+\end{table}
+
+\section{DISCUSSION/LIMITATIONS/IDEAS FOR FURTHER RESEARCH}
+
+
+\section{APPENDIX}
+
+\section{PERSONAL REFLECTIONS}
+\subsection{Brianna Cirillo}
+This course has truly taught me a lot about R. I have coded things in this class that I could have never imagined doing in my life. I have learned a lot about the way that I should code as well. I always coded the same way that I do math, I sit down and just push through it. I have learned that it is more of a process. You need to start and when you get stuck give yourself a break and come back to it with a fresh mind. I have seen that research is hard work and there is a lot that goes into it. There is so much background that needs to be done before getting to any actual statistic or computing. I have also realized that getting it right doesn't really exist, and as someone great has said plenty of time, "celebrate the little victories". It is most definitely a process. I was very surprised at how much I knew about statistics and R. I definitely downplay my knowledge and this course showed me that I know more than I think. The impact it has made on my future is that I probably will not go in the research direction. This class gave me a lot of anxiety about if I was on the right path or doing the right thing, which goes back to me doubting my skills and knowledge. 
+
+This course taught me that I definitely appreciate either complete guidance or complete control. I like to be able to either just complete an assignment or figure out what I need to do and do it the way that most makes sense in my head. I have realized that when I am extremely frustrated I tend to walk away and come back to it later. But, the stress about not knowing how to fix it makes me think about it constantly until I figure it out. I definitely doubt myself more than I should, and when I am extremely stressed I doubt myself more. I think I work well with others, I love that we can throw ideas off of each other. Since this class was pretty diverse in major and skill level, I think we all brought something different to the table. The group part of this class was so great, because it  allowed us to grow together.
+
+To make this course better next time, I think we should go over the things we were reading about as a class. Most of the time, I felt like I understood but not completely. This definitely showed when we started doing the project and it was time to apply everything. I also think it may be beneficial to do the readings and then work on that part  of the project. I felt a little confused on some topics when we started doing them, just because it had been a while since we learned about it. I also think it would be beneficial if the layout was similar to consulting. If we had one assignment due every work that we got to work on for one class period, and then present the next class time. Overall, this class was an amazing experience and truly taught me a lot. It was a lot of work, but so worth it in the end. I definitely feel like I have grown as a person and a statistician.
+\subsection{Samantha Colucci}
+\subsection{Shannon Coyle}
+
+\end{document} 
