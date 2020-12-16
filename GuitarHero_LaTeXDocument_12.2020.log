@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  11 DEC 2020 14:13
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  15 DEC 2020 10:12
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -192,39 +192,46 @@ e
 
 {/usr/local/texlive/2020/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 [2]
-<Pari Correlation.pdf, id=12, 614.295pt x 794.97pt>
-File: Pari Correlation.pdf Graphic file (type pdf)
-<use Pari Correlation.pdf>
-Package pdftex.def Info: Pari Correlation.pdf  used on input line 45.
-(pdftex.def)             Requested size: 72.2687pt x 144.53192pt.
-
-Overfull \hbox (28.35146pt too wide) in paragraph at lines 50--50
+Overfull \hbox (28.35146pt too wide) in paragraph at lines 42--42
 []\OT1/cmr/bx/n/17.28 EMPIRICAL TYPE 1 ER-ROR AND POWER
  []
 
+[3]
+Overfull \hbox (79.82394pt too wide) in paragraph at lines 68--93
+[] 
+ []
 
-Overfull \hbox (15.55771pt too wide) in paragraph at lines 60--60
+[4] [5] [6]
+Overfull \hbox (15.55771pt too wide) in paragraph at lines 196--196
 []\OT1/cmr/bx/n/17.28 DISCUSSION/LIMITATIONS/IDEAS FOR
  []
 
-[3 <./Pari Correlation.pdf>] [4] (./GuitarHero_LaTeXDocument_12.2020.aux) ) 
+<Pari Correlation.pdf, id=27, 614.295pt x 794.97pt>
+File: Pari Correlation.pdf Graphic file (type pdf)
+<use Pari Correlation.pdf>
+Package pdftex.def Info: Pari Correlation.pdf  used on input line 202.
+(pdftex.def)             Requested size: 199.16928pt x 257.74355pt.
+[7] [8 <./Pari Correlation.pdf>] (./GuitarHero_LaTeXDocument_12.2020.aux) ) 
 Here is how much of TeX's memory you used:
- 2263 strings out of 480608
- 33006 string characters out of 5903631
- 275339 words of memory out of 5000000
- 18147 multiletter control sequences out of 15000+600000
- 535519 words of font info for 35 fonts, out of 8000000 for 9000
+ 2281 strings out of 480608
+ 33195 string characters out of 5903631
+ 281339 words of memory out of 5000000
+ 18158 multiletter control sequences out of 15000+600000
+ 538631 words of font info for 46 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 34i,6n,29p,564b,233s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 34i,8n,29p,519b,226s stack positions out of 5000i,500n,10000p,200000b,80000s
 </us
 r/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr
-/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/l
-ocal/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb>
-Output written on GuitarHero_LaTeXDocument_12.2020.pdf (4 pages, 138076 bytes).
+/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/
+local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/lo
+cal/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/loca
+l/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/t
+exlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
+Output written on GuitarHero_LaTeXDocument_12.2020.pdf (8 pages, 167938 bytes).
 
 PDF statistics:
- 44 PDF objects out of 1000 (max. 8388607)
- 30 compressed objects within 1 object stream
+ 70 PDF objects out of 1000 (max. 8388607)
+ 49 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  6 words of extra memory for PDF output out of 10000 (max. 10000000)
 

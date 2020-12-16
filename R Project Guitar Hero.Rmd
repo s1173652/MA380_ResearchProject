@@ -563,7 +563,7 @@ runs.test.numHits <- function(list) {
 ```
 
 ```{r}
-runs.test(Reduce(c,samples.numHits(bootsa.a))), level = 0.95, method = "percentile")
+runs.test(Reduce(c,samples.numHits(bootsa.a)), level = 0.95, method = "percentile")
 ```
 
 ```{r}
@@ -616,14 +616,22 @@ judith <- as.numeric(judith)
 judith.boot <- bootstrap(judith, 1000, length(judith))
 judith.boot1 <- bootstrap(judith, 100, length(judith))
 
-cat('---Test Results for Judith Data---', '\n')
-cat('cmax Test: ', cmax.test(judith.boot, judith),  '\n')
-cat('Method 1 Test: ', method1.test(judith.boot, judith),  '\n')
-cat('Method 2 Test: ', method2.test(judith.boot, judith),  '\n')
-cat('Runs Test: ', runs.test.numHits(samples.numHits(judith.boot1)),  '\n')
+
+cmax.test(judith.boot, judith)
+
 ```
 
+```{r}
+method1.test(judith.boot, judith)
+```
 
+```{r}
+method2.test(judith.boot, judith)
+```
+
+```{r}
+runs.test.numHits(samples.numHits(judith.boot1))
+```
 
 
 ## Hurts
@@ -637,11 +645,19 @@ hurts.boot <- bootstrap(hurts, 100, length(hurts))
 ```
 
 ```{r}
-cat('---Test Results for Hurts Data---', '\n')
-cat('cmax Test: ', cmax.test(hurts.boot, hurts),  '\n')
-cat('Method 1 Test: ', method1.test(hurts.boot, hurts),  '\n')
-cat('Method 2 Test: ', method2.test(hurts.boot, hurts),  '\n')
-cat('Runs Test: ', runs.test.numHits(samples.numHits(hurts.boot)),  '\n')
+cmax.test(hurts.boot, hurts)
+```
+
+```{r}
+method1.test(hurts.boot, hurts)
+```
+
+```{r}
+method2.test(hurts.boot, hurts)
+```
+
+```{r}
+runs.test.numHits(samples.numHits(hurts.boot))
 ```
 
 ## Funky
